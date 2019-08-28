@@ -7,19 +7,27 @@ public class PlayerMovement : MonoBehaviour
 	[Header("Movement Values")]
 	[SerializeField] float movingSpeed = 5f;
 	[SerializeField] float climbingSpeed = 5f;
-	[SerializeField] float jumpForce = 5f;
+	[SerializeField] float jumpForce = 10f;
+
+	[Header("Ground Check Info")]
+	[SerializeField] Transform groundCheck;
+	[SerializeField] float groundCheckRadius;
+	[SerializeField] LayerMask groundMask;
+	[SerializeField] bool grounded;
+
 
 	[Header("Others")]
+	[SerializeField] bool canClimb;
 	[SerializeField] float changeDirectionOffset = 0.4f;
 	[SerializeField] float raycastDistance = 5f;
 	[SerializeField] LayerMask ladderMask;
-	[SerializeField] LayerMask groundMask;
 	[SerializeField] Vector3 raycastOffset = new Vector3(-0.6f, -1.65f);
 
 	private Player player;
+	private Rigidbody2D rigidBody2D;
+	private BoxCollider2D boxCollider2D;
 	private Animator animator;
 	private bool facingRight;
-	private bool canClimb;
 
 	private string isWalkingString = "isWalking";
 	private string isClimbingString = "isClimbing";
@@ -29,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
 	{
 		player = new Player("Player");
 		animator = GetComponent<Animator>();
+		rigidBody2D = GetComponent<Rigidbody2D>();
+		boxCollider2D = GetComponent<BoxCollider2D>();
 	}
 
     // Update is called once per frame
@@ -37,24 +47,30 @@ public class PlayerMovement : MonoBehaviour
 		DoMovement();
 	}
 
+	void FixedUpdate()
+	{
+		grounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundMask);
+	}
+
 	private void DoMovement()
 	{
 		Vector3 raycastPosition = transform.position + raycastOffset;
 		RaycastHit2D hitLadderUp = Physics2D.Raycast(raycastPosition, Vector2.up, raycastDistance, ladderMask);
 		RaycastHit2D hitLadderDown = Physics2D.Raycast(raycastPosition, Vector2.down, raycastDistance, ladderMask);
 		RaycastHit2D hitGround = Physics2D.Raycast(raycastPosition, Vector2.down, 0.5f, groundMask);
-		bool grounded = GetComponent<BoxCollider2D>().IsTouchingLayers(groundMask.value);
+		//bool grounded = GetComponent<CircleCollider2D>().IsTouchingLayers(groundMask.value);
 
-		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
+		if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)))
 		{
 			if (!animator.GetBool(isClimbingString))
 			{
 				animator.SetBool(isWalkingString, true);
 				Walk();
 			}
-			else if (Input.GetKey(KeyCode.Space))
+			else
 			{
 				animator.SetBool(isWalkingString, false);
+				Jump();
 			}
 		}
 		else
@@ -62,48 +78,64 @@ public class PlayerMovement : MonoBehaviour
 			animator.SetBool(isWalkingString, false);
 		}
 
-		if (hitLadderUp.collider != null)
+		if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.Space))
 		{
-			if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
-			{
-				animator.SetBool(isClimbingString, true);
-				Climb();
-			}
+			StartCoroutine(JumpDown());
 		}
-		else if (hitLadderDown.collider != null && Input.GetKey(KeyCode.DownArrow))
+		else if (Input.GetKey(KeyCode.Space) && grounded)
+		{
+			animator.SetBool(isWalkingString, false);
+			Jump();
+		}
+
+		
+
+		if ((Input.GetKey(KeyCode.UpArrow) || (Input.GetKey(KeyCode.DownArrow) && !grounded)) && canClimb ||
+			hitLadderDown.collider != null && Input.GetKey(KeyCode.DownArrow))
 		{
 			animator.SetBool(isClimbingString, true);
+			rigidBody2D.bodyType = RigidbodyType2D.Kinematic;
 			Climb();
+
+			//if (hitLadderDown.collider == null && grounded)
+			//{
+			//	rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
+			//	animator.SetBool(isClimbingString, true);
+			//}
+
 		}
-		else if (grounded)
+		else if (hitLadderDown.collider == null && grounded)
 		{
+			rigidBody2D.bodyType = RigidbodyType2D.Dynamic;
 			animator.SetBool(isClimbingString, false);
 		}
-		else
+
+		if (!canClimb)
 		{
 			animator.SetBool(isClimbingString, false);
 		}
 
-		//if (hitGround.collider != null && animator.GetBool(isClimbingString))
+		//if (hitLadderUp.collider != null)
 		//{
-		//	//GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+		//	if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+		//	{
+		//		animator.SetBool(isClimbingString, true);
+		//		rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+		//		Climb();
+		//	}
+		//}
+		//else if (hitLadderDown.collider != null && Input.GetKey(KeyCode.DownArrow))
+		//{
+		//	animator.SetBool(isClimbingString, true);
+		//	rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+		//	Climb();
+		//}
+		//else
+		//{
 		//	animator.SetBool(isClimbingString, false);
 		//}
-		//bool grounded = GetComponent<BoxCollider2D>().IsTouchingLayers(groundMask.value);
+
 		Debug.Log(grounded);
-		//if (grounded)
-		//{
-		//	animator.SetBool(isClimbingString, false);
-		//}
-
-		if (animator.GetBool(isClimbingString))
-		{
-			GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
-		}
-		else
-		{
-			GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-		}
 	}
 
 	private void Walk()
@@ -121,14 +153,14 @@ public class PlayerMovement : MonoBehaviour
 	private void Climb()
 	{
 		float vertical = Input.GetAxisRaw("Vertical");
-		Vector3 movingDistance = new Vector3(0, vertical * climbingSpeed * Time.deltaTime);
-		transform.Translate(movingDistance);
+		Vector3 climbingDistance = new Vector3(0, vertical * climbingSpeed * Time.deltaTime);
+		transform.Translate(climbingDistance);
 
 	}
 
 	private void Jump()
 	{
-
+		rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, jumpForce);
 	}
 
 	private void ChangeDirection()
@@ -139,9 +171,20 @@ public class PlayerMovement : MonoBehaviour
 		raycastOffset.x *= -1;
 	}
 
-	private void OnCollisionEnter2D(Collision2D collision)
+	private IEnumerator JumpDown()
 	{
-		Debug.Log("Collision");
+		boxCollider2D.isTrigger = true;
+		yield return new WaitForSeconds(0.5f);
+		boxCollider2D.isTrigger = false;
 	}
 
+	public void SetCanClimb(bool canClimb)
+	{
+		this.canClimb = canClimb;
+	}
+
+	//private void OnCollisionEnter2D(Collision2D collision)
+	//{
+	//	Debug.Log("Collision: " + collision.gameObject.name);
+	//}
 }
