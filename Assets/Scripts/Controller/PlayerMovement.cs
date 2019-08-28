@@ -57,8 +57,6 @@ public class PlayerMovement : MonoBehaviour
 		Vector3 raycastPosition = transform.position + raycastOffset;
 		RaycastHit2D hitLadderUp = Physics2D.Raycast(raycastPosition, Vector2.up, raycastDistance, ladderMask);
 		RaycastHit2D hitLadderDown = Physics2D.Raycast(raycastPosition, Vector2.down, raycastDistance, ladderMask);
-		RaycastHit2D hitGround = Physics2D.Raycast(raycastPosition, Vector2.down, 0.5f, groundMask);
-		//bool grounded = GetComponent<CircleCollider2D>().IsTouchingLayers(groundMask.value);
 
 		if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)))
 		{
@@ -88,21 +86,12 @@ public class PlayerMovement : MonoBehaviour
 			Jump();
 		}
 
-		
-
 		if ((Input.GetKey(KeyCode.UpArrow) || (Input.GetKey(KeyCode.DownArrow) && !grounded)) && canClimb ||
 			hitLadderDown.collider != null && Input.GetKey(KeyCode.DownArrow))
 		{
 			animator.SetBool(isClimbingString, true);
 			rigidBody2D.bodyType = RigidbodyType2D.Kinematic;
 			Climb();
-
-			//if (hitLadderDown.collider == null && grounded)
-			//{
-			//	rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
-			//	animator.SetBool(isClimbingString, true);
-			//}
-
 		}
 		else if (hitLadderDown.collider == null && grounded)
 		{
@@ -115,27 +104,7 @@ public class PlayerMovement : MonoBehaviour
 			animator.SetBool(isClimbingString, false);
 		}
 
-		//if (hitLadderUp.collider != null)
-		//{
-		//	if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
-		//	{
-		//		animator.SetBool(isClimbingString, true);
-		//		rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
-		//		Climb();
-		//	}
-		//}
-		//else if (hitLadderDown.collider != null && Input.GetKey(KeyCode.DownArrow))
-		//{
-		//	animator.SetBool(isClimbingString, true);
-		//	rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
-		//	Climb();
-		//}
-		//else
-		//{
-		//	animator.SetBool(isClimbingString, false);
-		//}
-
-		Debug.Log(grounded);
+		//Debug.Log(grounded);
 	}
 
 	private void Walk()
@@ -182,9 +151,4 @@ public class PlayerMovement : MonoBehaviour
 	{
 		this.canClimb = canClimb;
 	}
-
-	//private void OnCollisionEnter2D(Collision2D collision)
-	//{
-	//	Debug.Log("Collision: " + collision.gameObject.name);
-	//}
 }
