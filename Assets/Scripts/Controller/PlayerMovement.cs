@@ -8,6 +8,8 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] float movingSpeed = 5f;
 	[SerializeField] float climbingSpeed = 5f;
 	[SerializeField] float jumpForce = 10f;
+	[SerializeField] float jumpAsideForceX = 4f;
+	[SerializeField] float jumpAsideForceY = 7f;
 
 	[Header("Ground Check Info")]
 	[SerializeField] Transform groundCheck;
@@ -29,8 +31,11 @@ public class PlayerMovement : MonoBehaviour
 	private Animator animator;
 	private bool facingRight;
 
-	private string isWalkingString = "isWalking";
-	private string isClimbingString = "isClimbing";
+	private bool isWalking;
+	private bool isClimbing;
+
+	private const string IS_WALKING_STRING = "isWalking";
+	private const string IS_CLIMBING_STRING = "isClimbing";
 
 	// Start is called before the first frame update
 	void Start()
@@ -47,33 +52,31 @@ public class PlayerMovement : MonoBehaviour
 		DoMovement();
 	}
 
-	void FixedUpdate()
-	{
-		grounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundMask);
-	}
-
 	private void DoMovement()
 	{
 		Vector3 raycastPosition = transform.position + raycastOffset;
-		RaycastHit2D hitLadderUp = Physics2D.Raycast(raycastPosition, Vector2.up, raycastDistance, ladderMask);
-		RaycastHit2D hitLadderDown = Physics2D.Raycast(raycastPosition, Vector2.down, raycastDistance, ladderMask);
+		RaycastHit2D hitLadderDown = Physics2D.Raycast(boxCollider2D.bounds.center, Vector2.down, raycastDistance, ladderMask);
+		float extraHeight = 1f;
+		RaycastHit2D hitGround = Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, extraHeight, groundMask);
+		grounded = hitGround.collider != null;
 
 		if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)))
 		{
-			if (!animator.GetBool(isClimbingString))
+			if (!isClimbing)
 			{
-				animator.SetBool(isWalkingString, true);
 				Walk();
 			}
-			else
+			else 
 			{
-				animator.SetBool(isWalkingString, false);
-				Jump();
+				if (Input.GetKey(KeyCode.Space))
+				{
+					JumpAside();
+				}
 			}
 		}
 		else
 		{
-			animator.SetBool(isWalkingString, false);
+			CancelWalk();
 		}
 
 		if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.Space))
@@ -82,33 +85,26 @@ public class PlayerMovement : MonoBehaviour
 		}
 		else if (Input.GetKey(KeyCode.Space) && grounded)
 		{
-			animator.SetBool(isWalkingString, false);
 			Jump();
 		}
 
 		if ((Input.GetKey(KeyCode.UpArrow) || (Input.GetKey(KeyCode.DownArrow) && !grounded)) && canClimb ||
 			hitLadderDown.collider != null && Input.GetKey(KeyCode.DownArrow))
 		{
-			animator.SetBool(isClimbingString, true);
-			rigidBody2D.bodyType = RigidbodyType2D.Kinematic;
+			canClimb = true; //for the case climb down, not set this to true will cause RigidbodyType2D become Dynamic
 			Climb();
 		}
-		else if (hitLadderDown.collider == null && grounded)
+		else if (isClimbing && hitLadderDown.collider == null && grounded || !canClimb)
 		{
-			rigidBody2D.bodyType = RigidbodyType2D.Dynamic;
-			animator.SetBool(isClimbingString, false);
+			CancelClimb();
 		}
-
-		if (!canClimb)
-		{
-			animator.SetBool(isClimbingString, false);
-		}
-
-		//Debug.Log(grounded);
 	}
 
 	private void Walk()
 	{
+		isWalking = true;
+		animator.SetBool(IS_WALKING_STRING, isWalking);
+
 		float horizontal = Input.GetAxisRaw("Horizontal");
 		if ((horizontal > 0 && !facingRight) || (horizontal < 0 && facingRight))
 		{
@@ -121,15 +117,31 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Climb()
 	{
+		isClimbing = true;
+		animator.SetBool(IS_CLIMBING_STRING, isClimbing);
+		rigidBody2D.bodyType = RigidbodyType2D.Kinematic;
+
 		float vertical = Input.GetAxisRaw("Vertical");
 		Vector3 climbingDistance = new Vector3(0, vertical * climbingSpeed * Time.deltaTime);
 		transform.Translate(climbingDistance);
-
 	}
 
 	private void Jump()
 	{
+		if (isWalking)
+		{
+			CancelWalk();
+		}
+
 		rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, jumpForce);
+	}
+
+	private void JumpAside()
+	{
+		CancelClimb();
+
+		float horizontal = Input.GetAxisRaw("Horizontal");
+		rigidBody2D.velocity = horizontal > 0 ? new Vector2(jumpAsideForceX, jumpAsideForceY) : new Vector2(-jumpAsideForceX, jumpAsideForceY);
 	}
 
 	private void ChangeDirection()
@@ -138,6 +150,19 @@ public class PlayerMovement : MonoBehaviour
 		transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y);
 		transform.localPosition += new Vector3(changeDirectionOffset * transform.localScale.x, 0);
 		raycastOffset.x *= -1;
+	}
+
+	private void CancelWalk()
+	{
+		isWalking = false;
+		animator.SetBool(IS_WALKING_STRING, isWalking);
+	}
+
+	private void CancelClimb()
+	{
+		isClimbing = false;
+		animator.SetBool(IS_CLIMBING_STRING, isClimbing);
+		rigidBody2D.bodyType = RigidbodyType2D.Dynamic;
 	}
 
 	private IEnumerator JumpDown()

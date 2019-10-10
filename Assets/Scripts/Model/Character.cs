@@ -6,6 +6,7 @@ public class Character
 {
 	private string name;
 	private Sprite sprite;
+
 	public Character(string name)
 	{
 		this.name = name;
