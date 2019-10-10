@@ -12,8 +12,6 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] float jumpAsideForceY = 7f;
 
 	[Header("Ground Check Info")]
-	[SerializeField] Transform groundCheck;
-	[SerializeField] float groundCheckRadius;
 	[SerializeField] LayerMask groundMask;
 	[SerializeField] bool grounded;
 
