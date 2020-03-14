@@ -18,8 +18,6 @@ public class PlayerMovement : MonoBehaviour
 
 
 	[Header("Others")]
-	[SerializeField] bool canClimb;
-	// [SerializeField] float changeDirectionOffset = 0.4f;
 	[SerializeField] float raycastDistance = 5f;
 	[SerializeField] LayerMask ladderMask;
 	[SerializeField] Vector3 raycastOffset = new Vector3(-0.6f, -1.65f);
@@ -40,11 +38,17 @@ public class PlayerMovement : MonoBehaviour
 
 	private const string IS_WALKING_STRING = "isWalking";
 	private const string IS_CLIMBING_STRING = "isClimbing";
+
+	private bool canWalk;
+	private bool canJump;
+	private bool canJumpDown;
+	private bool canJumpAside;
+	private bool canClimb;
 	#endregion
 
-	#region Script Cycle
+	#region Methods
 	// Start is called before the first frame update
-	void Start()
+	private void Start()
 	{
 		player = new Player("Player");
 		animator = GetComponent<Animator>();
@@ -52,15 +56,14 @@ public class PlayerMovement : MonoBehaviour
 		playerCollider = GetComponent<BoxCollider2D>();
 	}
 
-    // Update is called once per frame
-    void Update()
+	// Update is called once per frame
+	private void Update()
 	{
-		DoMovement();
+		CheckGrounded();
+		CheckInputs();
 	}
-	#endregion
 
-	#region Methods
-	private void DoMovement()
+	private void CheckGrounded()
 	{
 		RaycastHit2D hitGround = Physics2D.BoxCast
 		(
@@ -72,45 +75,59 @@ public class PlayerMovement : MonoBehaviour
 			groundMask
 		);
 		grounded = hitGround.collider != null;
+	}
 
-		if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)))
+	private void CheckInputs()
+	{
+		if (!isClimbing && (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)))
 		{
-			if (!isClimbing)
-			{
-				Walk();
-			}
-			else 
-			{
-				if (Input.GetKey(KeyCode.Space))
-				{
-					JumpAside();
-				}
-			}
+			canWalk = true;
 		}
 		else
 		{
 			CancelWalk();
 		}
 
-		if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.Space))
+		if (isClimbing &&
+			(Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && Input.GetKey(KeyCode.Space))
 		{
-			StartCoroutine(JumpDown());
+			canJumpAside = true;
+		}
+		else if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.Space))
+		{
+			canJumpDown = true;
 		}
 		else if (Input.GetKey(KeyCode.Space) && grounded)
 		{
-			Jump();
+			canJump = true;
+		}
+		else
+		{
+			CancelJump();
 		}
 
 		if (IsClimbable())
 		{
-			MovePlayerPosToMiddleOfLadder();
-			AdjustRigidBodyToClimb();
-			Climb();
+			canClimb = true;
 		}
 		else if (IsGroundedWhileClimbing() || !isInLadderArea)
 		{
 			CancelClimb();
 		}
+	}
+
+	private void CancelJump()
+	{
+		canJump = false;
+		canJumpDown = false;
+		canJumpAside = false;
+	}
+
+	private void CancelWalk()
+	{
+		canWalk = false;
+		isWalking = false;
+		//animator.SetBool(IS_WALKING_STRING, isWalking);
 	}
 
 	private bool IsClimbable() 
@@ -122,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
 			playerCollider.bounds.size.y / 2,
 			ladderMask
 		);
+
 		hitLadderDown = Physics2D.Raycast
 		(
 			playerCollider.bounds.center,
@@ -129,6 +147,7 @@ public class PlayerMovement : MonoBehaviour
 			playerCollider.bounds.size.y / 2 + PlayerConstants.LadderDownRaycastDistanceOffset,
 			ladderMask
 		);
+
 		if (CanClimbInLadderArea() || CanClimbFromTopOfLadder())
 		{
 			return true;
@@ -152,6 +171,94 @@ public class PlayerMovement : MonoBehaviour
 
 	private  bool CanClimbFromTopOfLadder() {
 		return Input.GetKey(KeyCode.DownArrow) && hitLadderDown.collider != null;
+	}
+
+	private bool IsGroundedWhileClimbing()
+	{
+		return isClimbing && hitLadderDown.collider == null && grounded;
+	}
+
+	private void CancelClimb()
+	{
+		canClimb = false;
+		isClimbing = false;
+		//animator.SetBool(IS_CLIMBING_STRING, isClimbing);
+		rigidBody2D.bodyType = RigidbodyType2D.Dynamic;
+	}
+
+	private void FixedUpdate()
+	{
+		if (canWalk)
+		{
+			Walk();
+		}
+
+		if (canJump)
+		{
+			Jump();
+		}
+		else if (canJumpDown)
+		{
+			StartCoroutine(JumpDown());
+		}
+		else if (canJumpAside)
+		{
+			JumpAside();
+		}
+
+		if (canClimb)
+		{
+			MovePlayerPosToMiddleOfLadder();
+			AdjustRigidBodyToClimb();
+			Climb();
+		}
+	}
+
+	private void Walk()
+	{
+		isWalking = true;
+		//animator.SetBool(IS_WALKING_STRING, isWalking);
+
+		float horizontal = Input.GetAxisRaw("Horizontal");
+		if ((horizontal > 0 && !facingRight) || (horizontal < 0 && facingRight))
+		{
+			ChangeDirection();
+		}
+
+		Vector3 movingDistance = new Vector3(horizontal * movingSpeed * Time.deltaTime, 0);
+		transform.Translate(movingDistance);
+	}
+
+	private void ChangeDirection()
+	{
+		facingRight = !facingRight;
+		transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y);
+		raycastOffset.x *= -1;
+	}
+
+	private void Jump()
+	{
+		if (isWalking)
+		{
+			CancelWalk();
+		}
+
+		rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, jumpForce);
+	}
+
+	private IEnumerator JumpDown()
+	{
+		playerCollider.isTrigger = true;
+		yield return new WaitForSeconds(0.5f);
+		playerCollider.isTrigger = false;
+	}
+
+	private void JumpAside()
+	{
+		CancelClimb();
+
+		float horizontal = Input.GetAxisRaw("Horizontal");
+		rigidBody2D.velocity = horizontal > 0 ? new Vector2(jumpAsideForceX, jumpAsideForceY) : new Vector2(-jumpAsideForceX, jumpAsideForceY);
 	}
 
 	private void MovePlayerPosToMiddleOfLadder()
@@ -184,78 +291,9 @@ public class PlayerMovement : MonoBehaviour
 		Vector3 climbingDistance = new Vector3(0, vertical * climbingSpeed * Time.deltaTime);
 		transform.Translate(climbingDistance);
 	}
+	#endregion
 
-	private bool IsGroundedWhileClimbing() {
-		return isClimbing && hitLadderDown.collider == null && grounded;
-	}
-
-	private void Walk()
-	{
-		isWalking = true;
-		//animator.SetBool(IS_WALKING_STRING, isWalking);
-
-		float horizontal = Input.GetAxisRaw("Horizontal");
-		if ((horizontal > 0 && !facingRight) || (horizontal < 0 && facingRight))
-		{
-			ChangeDirection();
-		}
-
-		Vector3 movingDistance = new Vector3(horizontal * movingSpeed * Time.deltaTime, 0);
-		transform.Translate(movingDistance);
-	}
-
-	
-
-	private void Jump()
-	{
-		if (isWalking)
-		{
-			CancelWalk();
-		}
-
-		rigidBody2D.velocity = new Vector2(rigidBody2D.velocity.x, jumpForce);
-	}
-
-	private void JumpAside()
-	{
-		CancelClimb();
-
-		float horizontal = Input.GetAxisRaw("Horizontal");
-		rigidBody2D.velocity = horizontal > 0 ? new Vector2(jumpAsideForceX, jumpAsideForceY) : new Vector2(-jumpAsideForceX, jumpAsideForceY);
-	}
-
-	private void ChangeDirection()
-	{
-		facingRight = !facingRight;
-		transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y);
-		raycastOffset.x *= -1;
-	}
-
-	private void CancelWalk()
-	{
-		isWalking = false;
-		//animator.SetBool(IS_WALKING_STRING, isWalking);
-	}
-
-	private void CancelClimb()
-	{
-		isClimbing = false;
-		//animator.SetBool(IS_CLIMBING_STRING, isClimbing);
-		rigidBody2D.bodyType = RigidbodyType2D.Dynamic;
-	}
-
-	private IEnumerator JumpDown()
-	{
-		playerCollider.isTrigger = true;
-		yield return new WaitForSeconds(0.5f);
-		playerCollider.isTrigger = false;
-	}
-
-	public void SetCanClimb(bool canClimb)
-	{
-		this.canClimb = canClimb;
-	}
-
+	#region Unity Event Methods
 	private void OnTriggerEnter2D(Collider2D otherCollider)
 	{
 		if (otherCollider.tag == "Ladder")
