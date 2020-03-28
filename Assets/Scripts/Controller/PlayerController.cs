@@ -10,14 +10,15 @@ public class PlayerController : MonoBehaviour
 
 	private void Awake()
 	{
-		playerData = new Player("Thai");
+		playerData = new Player();
 	}
 
 	// Start is called before the first frame update
 	void Start()
     {
-        
-    }
+		level = playerData.Level;
+		UpdateExpBar();
+	}
 
     // Update is called once per frame
     void Update()
@@ -25,9 +26,9 @@ public class PlayerController : MonoBehaviour
         
     }
 
-	public void GainExp(float gainedExp)
+	public void GainExp(long gainedExp)
 	{
-		playerData.AddCurrentExp(gainedExp);
+		playerData.IncreaseExp(gainedExp);
 		CheckPlayerLvUp();
 		UpdateExpBar();
 	}
@@ -50,7 +51,7 @@ public class PlayerController : MonoBehaviour
 
 	private float CalculateExpPercent()
 	{
-		float percent = (float)(Math.Round(playerData.CurrentExp / playerData.NextLvExp * 100, 2));
+		float percent = (float)playerData.CurrentExp / playerData.NextLvExp * 100;
 		return percent;
 	}
 }

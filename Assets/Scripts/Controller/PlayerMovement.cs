@@ -24,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
 	#endregion
 
 	#region Class Fields
-	private Player player;
 	private Rigidbody2D rigidBody2D;
 	private BoxCollider2D playerCollider;
 	private Animator animator;
@@ -50,7 +49,6 @@ public class PlayerMovement : MonoBehaviour
 	// Start is called before the first frame update
 	private void Start()
 	{
-		player = new Player("Player");
 		animator = GetComponent<Animator>();
 		rigidBody2D = GetComponent<Rigidbody2D>();
 		playerCollider = GetComponent<BoxCollider2D>();

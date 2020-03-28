@@ -30,9 +30,10 @@ public class ExpBarView : MonoBehaviour
 		expSlider = GetComponent<Slider>();
     }
 
-	public void UpdateExpInfo(float currentExp, float nextLvExp, float percent)
+	public void UpdateExpInfo(long currentExp, long nextLvExp, float percent)
 	{
-		string expInfo = currentExp + " / " + nextLvExp + " [" + percent + "%]";
+		string formattedPercent = String.Format("{0:0.00}", Math.Truncate(percent * 100) / 100);
+		string expInfo = currentExp + " / " + nextLvExp + " [" + formattedPercent + "%]";
 		expInfoTxt.SetText(expInfo);
 		expSlider.value = percent;
 	}

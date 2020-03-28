@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Character
+public class Player
 {
-	private int health;
 	private string hair;
 	private string eyes;
 	private string top;
@@ -12,66 +11,36 @@ public class Player : Character
 	private string shoes;
 	private string weapon;
 	private bool isFemale;
-	private float currentExp;
-	private float nextLvExp;
-	private int level;
 
-	public Player(string name) : base(name)
+	private PlayerStats playerStats;
+
+	public Player()
 	{
-		level = 1;
-		health = 100;
-		currentExp = 0;
-		nextLvExp = 500;
+		playerStats = new PlayerStats();
 	}
 
-	public Player(string name, string hair, string eyes, string top, string bottom, string shoes, string weapon, bool isFemale) : base (name)
+	public long CurrentExp
 	{
-		health = 100;
-		this.hair = hair;
-		this.eyes = eyes;
-		this.top = top;
-		this.bottom = bottom;
-		this.shoes = shoes;
-		this.weapon = weapon;
-		this.isFemale = isFemale;
+		get { return playerStats.CurrentExp; }
 	}
 
-	public Player(string name, int health, string hair, string eyes, string top, string bottom, string shoes, string weapon, bool isFemale) : base(name)
+	public void IncreaseExp(long receivedExp)
 	{
-		this.health = health;
-		this.hair = hair;
-		this.eyes = eyes;
-		this.top = top;
-		this.bottom = bottom;
-		this.shoes = shoes;
-		this.weapon = weapon;
-		this.isFemale = isFemale;
+		playerStats.IncreaseExp(receivedExp);
 	}
 
-	public float CurrentExp
+	public long NextLvExp
 	{
-		get { return currentExp; }
-	}
-
-	public void AddCurrentExp(float toAddExp)
-	{
-		currentExp += toAddExp;
-	}
-
-	public float NextLvExp
-	{
-		get { return nextLvExp; }
+		get { return playerStats.NextLvExp; }
 	}
 
 	public int Level
 	{
-		get { return level; }
+		get { return playerStats.Level; }
 	}
 
 	public void LvUp()
 	{
-		currentExp = currentExp - nextLvExp;
-		nextLvExp += 100;
-		level++;
+		playerStats.LvUp();
 	}
 }
