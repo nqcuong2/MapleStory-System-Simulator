@@ -225,6 +225,34 @@ public class PlayerStats
 		LUK = 4;
 	}
 
+	public void AssignOneAbilityPoints(StatsConstants.AbilityPointType abilityPointType)
+	{
+		switch(abilityPointType)
+		{
+			case StatsConstants.AbilityPointType.HP:
+				HP += 100;
+				break;
+			case StatsConstants.AbilityPointType.MP:
+				MP += 10;
+				break;
+			case StatsConstants.AbilityPointType.STR:
+				STR++;
+				break;
+			case StatsConstants.AbilityPointType.DEX:
+				DEX++;
+				break;
+			case StatsConstants.AbilityPointType.INT:
+				INT++;
+				break;
+			case StatsConstants.AbilityPointType.LUK:
+				LUK++;
+				break;
+		}
+
+		AbilityPoints--;
+		CalculateDmg();
+	}
+
 	public void AssignAllAbilityPoints()
 	{
 		STR += AbilityPoints;
@@ -242,7 +270,7 @@ public class PlayerStats
 		CurrentExp = CurrentExp - NextLvExp;
 		Level++;
 		SetNextLvExp();
-		AbilityPoints += StatsFactory.ABILITY_POINTS_PER_LV;
+		AbilityPoints += StatsConstants.ABILITY_POINTS_PER_LV;
 	}
 	#endregion
 }

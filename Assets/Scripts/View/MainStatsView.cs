@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class MainStatsView : MonoBehaviour
 {
 	[Header("Buttons")]
+	[SerializeField] Button hpUp;
+	[SerializeField] Button mpUp;
 	[SerializeField] Button autoAssign;
 	[SerializeField] Button strUp;
 	[SerializeField] Button dexUp;
@@ -62,6 +64,12 @@ public class MainStatsView : MonoBehaviour
 	private void SetupButtons()
 	{
 		autoAssign.onClick.AddListener(() => OnAutoAssignClicked());
+		hpUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.HP));
+		mpUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.MP));
+		strUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.STR));
+		dexUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.DEX));
+		intUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.INT));
+		lukUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.LUK));
 		hyperStats.onClick.AddListener(() => OnHyperStatsClicked());
 		detailedStats.onClick.AddListener(() => OnDetailedStatsClicked());
 	}
@@ -69,6 +77,11 @@ public class MainStatsView : MonoBehaviour
 	private void OnAutoAssignClicked()
 	{
 		playerController.AssignAllAbilityPoints();
+	}
+
+	private void OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType abilityPointType)
+	{
+		playerController.AssignOneAbilityPoints(abilityPointType);
 	}
 
 	private void OnHyperStatsClicked()
@@ -97,9 +110,11 @@ public class MainStatsView : MonoBehaviour
 		}
 	}
 
-	public void UpdateStats(int lowerDmg, int upperDmg, int str, int dex, int intelligence, int luk)
+	public void UpdateStats(int lowerDmg, int upperDmg, int hp, int mp, int str, int dex, int intelligence, int luk)
 	{
 		dmg.text = lowerDmg + " ~ " + upperDmg;
+		this.hp.text = hp.ToString();
+		this.mp.text = mp.ToString();
 		this.str.text = str.ToString();
 		this.dex.text = dex.ToString();
 		this.intelligence.text = intelligence.ToString();
@@ -111,8 +126,30 @@ public class MainStatsView : MonoBehaviour
 		this.abilityPoints.text = abilityPoints.ToString();
 	}
 
-    // Update is called once per frame
-    void Update()
+	public void EnableAllAssignAbilityPointButtons()
+	{
+		autoAssign.interactable = true;
+		hpUp.interactable = true;
+		mpUp.interactable = true;
+		strUp.interactable = true;
+		dexUp.interactable = true;
+		intUp.interactable = true;
+		lukUp.interactable = true;
+	}
+
+	public void DisableAllAssignAbilityPointButtons()
+	{
+		autoAssign.interactable = false;
+		hpUp.interactable = false;
+		mpUp.interactable = false;
+		strUp.interactable = false;
+		dexUp.interactable = false;
+		intUp.interactable = false;
+		lukUp.interactable = false;
+	}
+
+	// Update is called once per frame
+	void Update()
     {
         
     }

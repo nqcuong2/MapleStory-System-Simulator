@@ -19,20 +19,8 @@ public class PlayerController : MonoBehaviour
 	void Start()
     {
 		level = playerStats.Level;
-		UpdateStatsOnUIs();
-		UpdateExpBar();
-	}
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-	public void AssignAllAbilityPoints()
-	{
-		playerData.PlayerStats.AssignAllAbilityPoints();
 		UpdateUIStats();
+		UpdateExpBar();
 	}
 
 	private void UpdateUIStats()
@@ -40,13 +28,59 @@ public class PlayerController : MonoBehaviour
 		MainStatsView.Instance.UpdateStats(
 			playerStats.LowerDmg,
 			playerStats.UppderDmg,
+			playerStats.HP,
+			playerStats.MP,
 			playerStats.STR,
 			playerStats.DEX,
 			playerStats.INT,
 			playerStats.LUK
 		);
 
+		UpdateAbilityPointsUI();
+	}
+
+	private void UpdateAbilityPointsUI()
+	{
 		MainStatsView.Instance.UpdateAbilityPoints(playerStats.AbilityPoints);
+
+		if (playerStats.AbilityPoints == 0)
+		{
+			MainStatsView.Instance.DisableAllAssignAbilityPointButtons();
+		}
+		else
+		{
+			MainStatsView.Instance.EnableAllAssignAbilityPointButtons();
+		}
+	}
+
+	private void UpdateExpBar()
+	{
+		float percent = CalculateExpPercent();
+		ExpBarView.Instance.UpdateExpInfo(playerStats.CurrentExp, playerStats.NextLvExp, percent);
+	}
+
+	private float CalculateExpPercent()
+	{
+		float percent = (float)playerStats.CurrentExp / playerStats.NextLvExp * 100;
+		return percent;
+	}
+
+	// Update is called once per frame
+	void Update()
+	{
+
+	}
+
+	public void AssignOneAbilityPoints(StatsConstants.AbilityPointType abilityPointType)
+	{
+		playerStats.AssignOneAbilityPoints(abilityPointType);
+		UpdateUIStats();
+	}
+
+	public void AssignAllAbilityPoints()
+	{
+		playerData.PlayerStats.AssignAllAbilityPoints();
+		UpdateUIStats();
 	}
 
 	public void GainExp(long gainedExp)
@@ -61,21 +95,11 @@ public class PlayerController : MonoBehaviour
 		while (playerStats.CurrentExp >= playerStats.NextLvExp)
 		{
 			playerStats.LvUp();
-			MainStatsView.Instance.UpdateAbilityPoints(playerStats.AbilityPoints);
+			UpdateAbilityPointsUI();
 		}
 
 		level = playerStats.Level;
 	}
 
-	private void UpdateExpBar()
-	{
-		float percent = CalculateExpPercent();
-		ExpBarView.Instance.UpdateExpInfo(playerStats.CurrentExp, playerStats.NextLvExp, percent);
-	}
-
-	private float CalculateExpPercent()
-	{
-		float percent = (float)playerStats.CurrentExp / playerStats.NextLvExp * 100;
-		return percent;
-	}
+		
 }
