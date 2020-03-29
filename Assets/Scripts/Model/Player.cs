@@ -12,35 +12,14 @@ public class Player
 	private string weapon;
 	private bool isFemale;
 
-	private PlayerStats playerStats;
+	public PlayerStats PlayerStats
+	{
+		get;
+		private set;
+	}
 
 	public Player()
 	{
-		playerStats = new PlayerStats();
-	}
-
-	public long CurrentExp
-	{
-		get { return playerStats.CurrentExp; }
-	}
-
-	public void IncreaseExp(long receivedExp)
-	{
-		playerStats.IncreaseExp(receivedExp);
-	}
-
-	public long NextLvExp
-	{
-		get { return playerStats.NextLvExp; }
-	}
-
-	public int Level
-	{
-		get { return playerStats.Level; }
-	}
-
-	public void LvUp()
-	{
-		playerStats.LvUp();
+		PlayerStats = new PlayerStats();
 	}
 }

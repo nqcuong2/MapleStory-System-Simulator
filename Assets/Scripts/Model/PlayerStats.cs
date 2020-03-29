@@ -1,11 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerStats
 {
-	#region Fields
-	//Basic stats
+	#region Properties
+
+	#region Main Stats
 	public string Name
 	{
 		get;
@@ -24,7 +26,13 @@ public class PlayerStats
 		private set;
 	}
 
-	public float[] Damage
+	public int LowerDmg
+	{
+		get;
+		private set;
+	}
+
+	public int UppderDmg
 	{
 		get;
 		private set;
@@ -60,7 +68,38 @@ public class PlayerStats
 		private set;
 	}
 
-	//Detailed stats
+	public int AbilityPoints
+	{
+		get;
+		private set;
+	}
+
+	public int STR
+	{
+		get;
+		private set;
+	}
+
+	public int DEX
+	{
+		get;
+		private set;
+	}
+
+	public int INT
+	{
+		get;
+		private set;
+	}
+
+	public int LUK
+	{
+		get;
+		private set;
+	}
+	#endregion
+
+	#region Detailed Stats
 	public int DmgBonus
 	{
 		get;
@@ -132,23 +171,65 @@ public class PlayerStats
 		get;
 		private set;
 	}
+	#endregion
 
 	#endregion
 
 	#region Constructor
 	public PlayerStats()
 	{
-		Level = 199;
-		HP = 100;
-		CurrentExp = 777054900;
-		GetNextLvExp();
+		InitializeMainStats();
+		//InitializeDetailedStats();
 	}
 	#endregion
 
 	#region Methods
-	public void GetNextLvExp()
+	private void InitializeMainStats()
+	{
+		InitializeBasicStats();
+		InitializeAbilityPoints();
+		CalculateDmg();
+	}
+
+	private void InitializeBasicStats()
+	{
+		Level = 1;
+		InitializeExp();
+	}
+
+	private void InitializeExp()
+	{
+		CurrentExp = 0;
+		SetNextLvExp();
+	}
+
+	private void SetNextLvExp()
 	{
 		NextLvExp = StatsFactory.GetExpFromLevel(Level);
+	}
+
+	private void CalculateDmg()
+	{
+		UppderDmg = StatsFactory.CalculateUpperDmg(this);
+		LowerDmg = StatsFactory.CalculateLowerDmg(this);
+	}
+
+	private void InitializeAbilityPoints()
+	{
+		AbilityPoints = 0;
+		HP = 500;
+		MP = 100;
+		STR = 4;
+		DEX = 4;
+		INT = 4;
+		LUK = 4;
+	}
+
+	public void AssignAllAbilityPoints()
+	{
+		STR += AbilityPoints;
+		AbilityPoints = 0;
+		CalculateDmg();
 	}
 
 	public void IncreaseExp(long receivedExp)
@@ -160,7 +241,8 @@ public class PlayerStats
 	{
 		CurrentExp = CurrentExp - NextLvExp;
 		Level++;
-		GetNextLvExp();
+		SetNextLvExp();
+		AbilityPoints += StatsFactory.ABILITY_POINTS_PER_LV;
 	}
 	#endregion
 }

@@ -6,17 +6,20 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 	private Player playerData;
+	private PlayerStats playerStats;
 	[SerializeField] int level;
 
 	private void Awake()
 	{
 		playerData = new Player();
+		playerStats = playerData.PlayerStats;
 	}
 
 	// Start is called before the first frame update
 	void Start()
     {
-		level = playerData.Level;
+		level = playerStats.Level;
+		UpdateStatsOnUIs();
 		UpdateExpBar();
 	}
 
@@ -26,32 +29,53 @@ public class PlayerController : MonoBehaviour
         
     }
 
+	public void AssignAllAbilityPoints()
+	{
+		playerData.PlayerStats.AssignAllAbilityPoints();
+		UpdateUIStats();
+	}
+
+	private void UpdateUIStats()
+	{
+		MainStatsView.Instance.UpdateStats(
+			playerStats.LowerDmg,
+			playerStats.UppderDmg,
+			playerStats.STR,
+			playerStats.DEX,
+			playerStats.INT,
+			playerStats.LUK
+		);
+
+		MainStatsView.Instance.UpdateAbilityPoints(playerStats.AbilityPoints);
+	}
+
 	public void GainExp(long gainedExp)
 	{
-		playerData.IncreaseExp(gainedExp);
+		playerStats.IncreaseExp(gainedExp);
 		CheckPlayerLvUp();
 		UpdateExpBar();
 	}
 
 	private void CheckPlayerLvUp()
 	{
-		while (playerData.CurrentExp >= playerData.NextLvExp)
+		while (playerStats.CurrentExp >= playerStats.NextLvExp)
 		{
-			playerData.LvUp();
+			playerStats.LvUp();
+			MainStatsView.Instance.UpdateAbilityPoints(playerStats.AbilityPoints);
 		}
 
-		level = playerData.Level;
+		level = playerStats.Level;
 	}
 
 	private void UpdateExpBar()
 	{
 		float percent = CalculateExpPercent();
-		ExpBarView.Instance.UpdateExpInfo(playerData.CurrentExp, playerData.NextLvExp, percent);
+		ExpBarView.Instance.UpdateExpInfo(playerStats.CurrentExp, playerStats.NextLvExp, percent);
 	}
 
 	private float CalculateExpPercent()
 	{
-		float percent = (float)playerData.CurrentExp / playerData.NextLvExp * 100;
+		float percent = (float)playerStats.CurrentExp / playerStats.NextLvExp * 100;
 		return percent;
 	}
 }

@@ -14,6 +14,20 @@ public class MainStatsView : MonoBehaviour
 	[SerializeField] Button hyperStats;
 	[SerializeField] Button detailedStats;
 
+	[Header("Texts")]
+	[SerializeField] Text playerName;
+	[SerializeField] Text className;
+	[SerializeField] Text guildName;
+	[SerializeField] Text fame;
+	[SerializeField] Text dmg;
+	[SerializeField] Text hp;
+	[SerializeField] Text mp;
+	[SerializeField] Text abilityPoints;
+	[SerializeField] Text str;
+	[SerializeField] Text dex;
+	[SerializeField] Text intelligence;
+	[SerializeField] Text luk;
+
 	[Header("Hyper Stats Btn Sprites")]
 	[SerializeField] Sprite normalHSShowState;
 	[SerializeField] Sprite normalHSHideState;
@@ -21,6 +35,8 @@ public class MainStatsView : MonoBehaviour
 	[Header("Detailed Stats Btn Sprites")]
 	[SerializeField] Sprite normalDSShowState;
 	[SerializeField] Sprite normalDSHideState;
+
+	private PlayerController playerController;
 
 	private static MainStatsView instance;
 	public static MainStatsView Instance
@@ -34,13 +50,25 @@ public class MainStatsView : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
+		playerController = FindObjectOfType<PlayerController>();
 	}
 
 	// Start is called before the first frame update
 	void Start()
     {
+		SetupButtons();
+	}
+
+	private void SetupButtons()
+	{
+		autoAssign.onClick.AddListener(() => OnAutoAssignClicked());
 		hyperStats.onClick.AddListener(() => OnHyperStatsClicked());
 		detailedStats.onClick.AddListener(() => OnDetailedStatsClicked());
+	}
+
+	private void OnAutoAssignClicked()
+	{
+		playerController.AssignAllAbilityPoints();
 	}
 
 	private void OnHyperStatsClicked()
@@ -67,6 +95,20 @@ public class MainStatsView : MonoBehaviour
 		{
 			GameObjectUtils.ShowGameObject(detailedStatsGO);
 		}
+	}
+
+	public void UpdateStats(int lowerDmg, int upperDmg, int str, int dex, int intelligence, int luk)
+	{
+		dmg.text = lowerDmg + " ~ " + upperDmg;
+		this.str.text = str.ToString();
+		this.dex.text = dex.ToString();
+		this.intelligence.text = intelligence.ToString();
+		this.luk.text = luk.ToString();
+	}
+
+	public void UpdateAbilityPoints(int abilityPoints)
+	{
+		this.abilityPoints.text = abilityPoints.ToString();
 	}
 
     // Update is called once per frame
