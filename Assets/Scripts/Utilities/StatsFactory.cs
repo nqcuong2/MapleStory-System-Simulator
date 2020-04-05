@@ -18,19 +18,43 @@ public class StatsFactory
 		}
 	}
 
-	public static int CalculateUpperDmg(PlayerStats playerStats)
+	public static int CalculateUpperActualDmgRange(PlayerStats playerStats)
 	{
 		double upperDmg = StatsConstants.ONE_HANDED_SWORD_MULTIPLIER * playerStats.STR * (45 / 100.0);
 		int roundedUpperDmg = (int)Math.Round(upperDmg, 0);
 		return roundedUpperDmg;
 	}
 
-	public static int CalculateLowerDmg(PlayerStats playerStats)
+	public static int CalculateLowerActualDmgRange(PlayerStats playerStats)
 	{
 		double lowerDmg = playerStats.UppderDmg * 20 / 100.0;
 		int roundedLowerDmg = (int)Math.Round(lowerDmg, 0);
 		return roundedLowerDmg;
 	}
 
-	
+	public static int CalculateUpperShownDmgRange(PlayerStats playerStats)
+	{
+		double actualDmgRange = CalculateUpperActualDmgRange(playerStats);
+		double shownDmgRange = actualDmgRange * (1 + 10 / 100) * (1 + 5 / 100);
+		int roundedDownDmgRange = (int)Math.Floor(shownDmgRange);
+		return roundedDownDmgRange;
+	}
+
+	public static int CalculateLowerShownDmgRange(PlayerStats playerStats)
+	{
+		double actualDmgRange = CalculateLowerActualDmgRange(playerStats);
+		double shownDmgRange = 1 + actualDmgRange * (1 + 10 / 100) * (1 + 5 / 100);
+		int roundedDownDmgRange = (int)Math.Floor(shownDmgRange);
+		return roundedDownDmgRange;
+	}
+
+	public static int CalculateUpperCritDmgPercent(PlayerStats playerStats)
+	{
+		return 50 + playerStats.CritDmg;
+	}
+
+	public static int CalculateUpperCritDmgPercent(PlayerStats playerStats)
+	{
+		return 20 + playerStats.CritDmg;
+	}
 }

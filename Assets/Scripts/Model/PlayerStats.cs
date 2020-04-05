@@ -166,6 +166,12 @@ public class PlayerStats
 		private set;
 	}
 
+	public int MasteryPercent
+	{
+		get;
+		private set;
+	}
+
 	public int HonorExp
 	{
 		get;
@@ -179,7 +185,7 @@ public class PlayerStats
 	public PlayerStats()
 	{
 		InitializeMainStats();
-		//InitializeDetailedStats();
+		InitializeDetailedStats();
 	}
 	#endregion
 
@@ -208,12 +214,6 @@ public class PlayerStats
 		NextLvExp = StatsFactory.GetExpFromLevel(Level);
 	}
 
-	private void CalculateDmg()
-	{
-		UppderDmg = StatsFactory.CalculateUpperDmg(this);
-		LowerDmg = StatsFactory.CalculateLowerDmg(this);
-	}
-
 	private void InitializeAbilityPoints()
 	{
 		AbilityPoints = 0;
@@ -223,6 +223,17 @@ public class PlayerStats
 		DEX = 4;
 		INT = 4;
 		LUK = 4;
+	}
+
+	private void CalculateDmg()
+	{
+		UppderDmg = StatsFactory.CalculateUpperShownDmgRange(this);
+		LowerDmg = StatsFactory.CalculateLowerShownDmgRange(this);
+	}
+
+	private void InitializeDetailedStats()
+	{
+		CritRate = 5;
 	}
 
 	public void AssignOneAbilityPoints(StatsConstants.AbilityPointType abilityPointType)
