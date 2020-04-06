@@ -53,7 +53,7 @@ public class StatsFactory
 		return 50 + playerStats.CritDmg;
 	}
 
-	public static int CalculateUpperCritDmgPercent(PlayerStats playerStats)
+	public static int CalculateLowerCritDmgPercent(PlayerStats playerStats)
 	{
 		return 20 + playerStats.CritDmg;
 	}
