@@ -2,11 +2,16 @@
 using UnityEngine.UI;
 using TMPro;
 using System;
+using UnityEngine.EventSystems;
 
-public class ExpBarView : MonoBehaviour
+public class ExpBarView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 	[SerializeField] TextMeshProUGUI expInfoTxt;
 	Slider expSlider;
+
+	private string currLvExp;
+	private string nextLvExp;
+	private string formattedExpPercent;
 
 	private static ExpBarView instance;
 	public static ExpBarView Instance
@@ -32,14 +37,37 @@ public class ExpBarView : MonoBehaviour
 
 	public void UpdateExpInfo(long currentExp, long nextLvExp, float percent)
 	{
-		string formattedPercent = String.Format("{0:0.00}", Math.Truncate(percent * 100) / 100);
-		string expInfo = currentExp + " / " + nextLvExp + " [" + formattedPercent + "%]";
-		expInfoTxt.SetText(expInfo);
+		currLvExp = currentExp.ToString();
+		this.nextLvExp = nextLvExp.ToString();
+		formattedExpPercent = String.Format("{0:0.00}", Math.Truncate(percent * 100) / 100);
+		ShowSimpleExpInfo();
 		expSlider.value = percent;
 	}
 
-    // Update is called once per frame
-    void Update()
+	private void ShowSimpleExpInfo()
+	{
+		string expInfo = currLvExp + " [" + formattedExpPercent + "%]";
+		expInfoTxt.SetText(expInfo);
+	}
+
+	public void OnPointerEnter(PointerEventData eventData)
+	{
+		ShowDetailExpInfo();
+	}
+
+	private void ShowDetailExpInfo()
+	{
+		string expInfo = "EXP : " + currLvExp + " / " + nextLvExp + " [" + formattedExpPercent + "%]";
+		expInfoTxt.SetText(expInfo);
+	}
+
+	public void OnPointerExit(PointerEventData eventData)
+	{
+		ShowSimpleExpInfo();
+	}
+
+	// Update is called once per frame
+	void Update()
     {
         
     }
