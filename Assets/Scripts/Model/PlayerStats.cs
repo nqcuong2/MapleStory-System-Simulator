@@ -217,8 +217,8 @@ public class PlayerStats
 	private void InitializeAbilityPoints()
 	{
 		AbilityPoints = 0;
-		HP = 500;
-		MP = 100;
+		HP = 55;
+		MP = 50;
 		STR = 4;
 		DEX = 4;
 		INT = 4;
