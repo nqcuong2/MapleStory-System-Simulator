@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System;
 
 public class MainStatsView : MonoBehaviour
 {
@@ -16,19 +18,19 @@ public class MainStatsView : MonoBehaviour
 	[SerializeField] Button hyperStats;
 	[SerializeField] Button detailedStats;
 
-	[Header("Texts")]
-	[SerializeField] Text playerName;
-	[SerializeField] Text className;
-	[SerializeField] Text guildName;
-	[SerializeField] Text fame;
-	[SerializeField] Text dmg;
-	[SerializeField] Text hp;
-	[SerializeField] Text mp;
-	[SerializeField] Text abilityPoints;
-	[SerializeField] Text str;
-	[SerializeField] Text dex;
-	[SerializeField] Text intelligence;
-	[SerializeField] Text luk;
+	[Header("TMP_Texts")]
+	[SerializeField] TMP_Text playerName;
+	[SerializeField] TMP_Text className;
+	[SerializeField] TMP_Text guildName;
+	[SerializeField] TMP_Text fame;
+	[SerializeField] TMP_Text dmg;
+	[SerializeField] TMP_Text hp;
+	[SerializeField] TMP_Text mp;
+	[SerializeField] TMP_Text abilityPoints;
+	[SerializeField] TMP_Text str;
+	[SerializeField] TMP_Text dex;
+	[SerializeField] TMP_Text intelligence;
+	[SerializeField] TMP_Text luk;
 
 	[Header("Hyper Stats Btn Sprites")]
 	[SerializeField] Sprite normalHSShowState;
@@ -40,25 +42,25 @@ public class MainStatsView : MonoBehaviour
 
 	private PlayerController playerController;
 
-	private static MainStatsView instance;
-	public static MainStatsView Instance
-	{
-		get
-		{
-			return instance;
-		}
-	}
+	public static MainStatsView Instance { get; private set; }
 
 	private void Awake()
 	{
-		instance = this;
+		Instance = this;
 		playerController = FindObjectOfType<PlayerController>();
 	}
 
 	// Start is called before the first frame update
 	void Start()
     {
+		HideOtherStatWindows();
 		SetupButtons();
+	}
+
+	private void HideOtherStatWindows()
+	{
+		DetailedStatsView.Instance.gameObject.SetActive(false);
+		HyperStatsView.Instance.gameObject.SetActive(false);
 	}
 
 	private void SetupButtons()
@@ -113,6 +115,7 @@ public class MainStatsView : MonoBehaviour
 	public void UpdateStats(int lowerDmg, int upperDmg, int hp, int mp, int str, int dex, int intelligence, int luk)
 	{
 		dmg.text = lowerDmg + " ~ " + upperDmg;
+		DetailedStatsView.Instance.UpdateDmgText(dmg.text);
 		this.hp.text = hp.ToString();
 		this.mp.text = mp.ToString();
 		this.str.text = str.ToString();
@@ -153,4 +156,9 @@ public class MainStatsView : MonoBehaviour
     {
         
     }
+
+	public void ToggleWindow()
+	{
+		gameObject.SetActive(gameObject.activeSelf ? false : true);
+	}
 }

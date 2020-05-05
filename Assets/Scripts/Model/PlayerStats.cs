@@ -234,6 +234,9 @@ public class PlayerStats
 	private void InitializeDetailedStats()
 	{
 		CritRate = 5;
+		HonorExp = 0;
+		Speed = 100;
+		Jump = 100;
 	}
 
 	public void AssignOneAbilityPoints(StatsConstants.AbilityPointType abilityPointType)
