@@ -36,9 +36,13 @@ public class KeyConfigView : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+		if (Input.GetKeyDown(KeyCode.LeftShift))
 		{
 			keyConfigController.ExecuteActionFromPressedKey(KeyCode.LeftShift);
+		}
+		else if (Input.GetKeyDown(KeyCode.RightShift))
+		{
+			keyConfigController.ExecuteActionFromPressedKey(KeyCode.RightShift);
 		}
 	}
 
@@ -48,24 +52,13 @@ public class KeyConfigView : MonoBehaviour
 		Event e = Event.current;
 		if (e.type == EventType.KeyDown && e.keyCode != KeyCode.None)
 		{
-			//if (e.keyCode == KeyCode.LeftAlt || e.keyCode == KeyCode.RightAlt)
-			//{
-			//	keyConfigController.ExecuteActionFromPressedKey(KeyCode.LeftAlt);
-			//}
-			//else if (e.keyCode == KeyCode.LeftControl || e.keyCode == KeyCode.RightControl)
-			//{
-			//	keyConfigController.ExecuteActionFromPressedKey(KeyCode.LeftControl);
-			//}
-			//else if ()
-			//{
-				keyConfigController.ExecuteActionFromPressedKey(e.keyCode);
-			//}
+			keyConfigController.ExecuteActionFromPressedKey(e.keyCode);
 		}
 	}
 
 	public void UpdateKey(KeySlotView selectedKey, KeyConfigFunctionKeyView function)
 	{
 		function.transform.localPosition = selectedKey.transform.localPosition;
-		keyConfigController.MapFunctionToKeyboardSlot(function.GetFunctionType(), selectedKey.GetKeyCode());
+		keyConfigController.MapFunctionToKeyboardSlot(selectedKey.GetKeyCode(), function.GetFunctionType());
 	}
 }

@@ -56,7 +56,7 @@ public class MouseController : MonoBehaviour
 			pointerData.position = Input.mousePosition;
 			this.raycaster.Raycast(pointerData, results);
 
-			//For every result returned, output the name of the GameObject on the Canvas hit by the Ray
+			bool found = false;
 			foreach (RaycastResult result in results)
 			{
 				if (selectedSprite == null)
@@ -65,6 +65,7 @@ public class MouseController : MonoBehaviour
 					if (selectedSprite != null)
 					{
 						ShowTransparentWithGivenIcon();
+						found = true;
 						break;
 					}
 				}
@@ -74,17 +75,16 @@ public class MouseController : MonoBehaviour
 					if (clickedKeySlot && transparentIcon.gameObject.activeSelf)
 					{
 						KeyConfigView.Instance.UpdateKey(clickedKeySlot, selectedSprite as KeyConfigFunctionKeyView);
-						selectedSprite = null;
 						HideClickingIcon();
+						found = true;
 						break;
 					}
 				}
-				
+			}
 
-				
-
-				//KeySlotView clickedFunctionKey = result.gameObject.GetComponent<KeyConfigFunctionKeyView>();
-
+			if (selectedSprite != null && !found)
+			{
+				HideClickingIcon();
 			}
 		}
 
@@ -96,6 +96,7 @@ public class MouseController : MonoBehaviour
 
 	private void HideClickingIcon()
 	{
+		selectedSprite = null;
 		transparentIcon.sprite = null;
 		transparentIcon.gameObject.SetActive(false);
 	}

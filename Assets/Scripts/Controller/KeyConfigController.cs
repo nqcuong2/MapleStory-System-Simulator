@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class KeyConfigController
 {
-	Dictionary<KeyConfigView.FunctionType, KeyCode> inputKeyToFunctionTypeMap;
+	Dictionary<KeyCode, KeyConfigView.FunctionType> inputKeyToFunctionTypeMap;
 	Dictionary<KeyConfigView.FunctionType, Action> functionTypeToFunctionMap;
 
 	public KeyConfigController()
@@ -22,7 +22,7 @@ public class KeyConfigController
 
 	private void InitializeKeyToFunctionMap()
 	{
-		inputKeyToFunctionTypeMap = new Dictionary<KeyConfigView.FunctionType, KeyCode>();
+		inputKeyToFunctionTypeMap = new Dictionary<KeyCode, KeyConfigView.FunctionType>();
 	}
 
 	private void ToggleStatsWindow()
@@ -30,27 +30,105 @@ public class KeyConfigController
 		MainStatsView.Instance.ToggleWindow();
 	}
 
-	public void MapFunctionToKeyboardSlot(KeyConfigView.FunctionType functionType, KeyCode keyCode)
+	public void MapFunctionToKeyboardSlot(KeyCode keyCode, KeyConfigView.FunctionType functionType)
 	{
-		if (inputKeyToFunctionTypeMap.ContainsKey(functionType))
+		RemoveFunctionFromPreviousSlot(functionType);
+		AddFunctionToNewSlot(keyCode, functionType);
+	}
+
+	private void RemoveFunctionFromPreviousSlot(KeyConfigView.FunctionType functionType)
+	{
+		foreach (KeyCode key in inputKeyToFunctionTypeMap.Keys)
 		{
-			inputKeyToFunctionTypeMap[functionType] = keyCode;
+			if (inputKeyToFunctionTypeMap[key] == functionType)
+			{
+				inputKeyToFunctionTypeMap.Remove(key);
+				switch (key)
+				{
+					case KeyCode.LeftShift:
+						inputKeyToFunctionTypeMap.Remove(KeyCode.RightShift);
+						break;
+					case KeyCode.RightShift:
+						inputKeyToFunctionTypeMap.Remove(KeyCode.LeftShift);
+						break;
+					case KeyCode.LeftControl:
+						inputKeyToFunctionTypeMap.Remove(KeyCode.RightControl);
+						break;
+					case KeyCode.RightControl:
+						inputKeyToFunctionTypeMap.Remove(KeyCode.LeftControl);
+						break;
+					case KeyCode.LeftAlt:
+						inputKeyToFunctionTypeMap.Remove(KeyCode.RightAlt);
+						break;
+					case KeyCode.RightAlt:
+						inputKeyToFunctionTypeMap.Remove(KeyCode.LeftAlt);
+						break;
+				}
+				
+				break;
+			}
+		}
+	}
+
+	private void AddFunctionToNewSlot(KeyCode keyCode, KeyConfigView.FunctionType functionType)
+	{
+		if (inputKeyToFunctionTypeMap.ContainsKey(keyCode))
+		{
+			inputKeyToFunctionTypeMap[keyCode] = functionType;
+			switch (keyCode)
+			{
+				case KeyCode.LeftShift:
+					inputKeyToFunctionTypeMap[KeyCode.RightShift] = functionType;
+					break;
+				case KeyCode.RightShift:
+					inputKeyToFunctionTypeMap[KeyCode.LeftShift] = functionType;
+					break;
+				case KeyCode.LeftControl:
+					inputKeyToFunctionTypeMap[KeyCode.RightControl] = functionType;
+					break;
+				case KeyCode.RightControl:
+					inputKeyToFunctionTypeMap[KeyCode.LeftControl] = functionType;
+					break;
+				case KeyCode.LeftAlt:
+					inputKeyToFunctionTypeMap[KeyCode.RightAlt] = functionType;
+					break;
+				case KeyCode.RightAlt:
+					inputKeyToFunctionTypeMap[KeyCode.LeftAlt] = functionType;
+					break;
+			}
 		}
 		else
 		{
-			inputKeyToFunctionTypeMap.Add(functionType, keyCode);
+			inputKeyToFunctionTypeMap.Add(keyCode, functionType);
+			switch (keyCode)
+			{
+				case KeyCode.LeftShift:
+					inputKeyToFunctionTypeMap.Add(KeyCode.RightShift, functionType);
+					break;
+				case KeyCode.RightShift:
+					inputKeyToFunctionTypeMap.Add(KeyCode.LeftShift, functionType);
+					break;
+				case KeyCode.LeftControl:
+					inputKeyToFunctionTypeMap.Add(KeyCode.RightControl, functionType);
+					break;
+				case KeyCode.RightControl:
+					inputKeyToFunctionTypeMap.Add(KeyCode.LeftControl, functionType);
+					break;
+				case KeyCode.LeftAlt:
+					inputKeyToFunctionTypeMap.Add(KeyCode.RightAlt, functionType);
+					break;
+				case KeyCode.RightAlt:
+					inputKeyToFunctionTypeMap.Add(KeyCode.LeftAlt, functionType);
+					break;
+			}
 		}
 	}
 
 	public void ExecuteActionFromPressedKey(KeyCode keyCode)
 	{
-		foreach (KeyConfigView.FunctionType functionType in inputKeyToFunctionTypeMap.Keys)
+		if (inputKeyToFunctionTypeMap.ContainsKey(keyCode))
 		{
-			if (inputKeyToFunctionTypeMap[functionType] == keyCode)
-			{
-				functionTypeToFunctionMap[functionType].Invoke();
-				return;
-			}
+			functionTypeToFunctionMap[inputKeyToFunctionTypeMap[keyCode]].Invoke();
 		}
 	}
 }
