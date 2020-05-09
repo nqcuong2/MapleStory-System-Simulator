@@ -156,9 +156,4 @@ public class MainStatsView : MonoBehaviour
     {
         
     }
-
-	public void ToggleWindow()
-	{
-		gameObject.SetActive(gameObject.activeSelf ? false : true);
-	}
 }

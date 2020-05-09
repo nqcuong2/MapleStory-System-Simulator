@@ -27,7 +27,7 @@ public class KeyConfigController
 
 	private void ToggleStatsWindow()
 	{
-		MainStatsView.Instance.ToggleWindow();
+		GameObjectUtils.ToggleWindow(MainStatsView.Instance.gameObject);
 	}
 
 	public void MapFunctionToKeyboardSlot(KeyCode keyCode, KeyConfigView.FunctionType functionType)

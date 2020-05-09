@@ -11,4 +11,10 @@ class GameObjectUtils : MonoBehaviour
 	{
 		toHideGameObject.SetActive(false);
 	}
+
+	public static void ToggleWindow(GameObject window)
+	{
+		window.SetActive(window.activeSelf ? false : true);
+		window.transform.SetAsLastSibling();
+	}
 }
