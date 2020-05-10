@@ -57,34 +57,63 @@ public class MouseController : MonoBehaviour
 			this.raycaster.Raycast(pointerData, results);
 
 			bool found = false;
+			KeySlotView clickedKeySlot = null;
 			foreach (RaycastResult result in results)
 			{
 				if (selectedSprite == null)
 				{
-					selectedSprite = result.gameObject.GetComponent<InteractableSprite>();
+					clickedKeySlot = result.gameObject.GetComponent<KeySlotView>();
+					if (clickedKeySlot)
+					{
+						selectedSprite = clickedKeySlot.AssignedFunctionKey;
+					}
+					else
+					{
+						selectedSprite = result.gameObject.GetComponent<InteractableSprite>();
+					}
+
 					if (selectedSprite != null)
 					{
 						ShowTransparentWithGivenIcon();
 						found = true;
-						break;
 					}
 				}
 				else
 				{
-					KeySlotView clickedKeySlot = result.gameObject.GetComponent<KeySlotView>();
-					if (clickedKeySlot && transparentIcon.gameObject.activeSelf)
+					if (!clickedKeySlot)
 					{
-						KeyConfigView.Instance.UpdateKey(clickedKeySlot, selectedSprite as KeyConfigFunctionKeyView);
-						HideClickingIcon();
-						found = true;
-						break;
+						clickedKeySlot = result.gameObject.GetComponent<KeySlotView>();
 					}
 				}
 			}
 
-			if (selectedSprite != null && !found)
+			if (selectedSprite != null)
 			{
-				HideClickingIcon();
+				if (clickedKeySlot)
+				{
+					bool requireUpdate = true;
+					if (clickedKeySlot.AssignedFunctionKey != null)
+					{
+						if (clickedKeySlot.AssignedFunctionKey.GetFunctionType() == selectedSprite.GetFunctionType())
+						{
+							requireUpdate = false;
+						}
+						else
+						{
+							clickedKeySlot.AssignedFunctionKey.Reset();
+						}
+					}
+
+					if (requireUpdate)
+					{
+						KeyConfigView.Instance.UpdateKey(clickedKeySlot, selectedSprite);
+					}
+				}
+
+				if (!found)
+				{
+					HideClickedIcon();
+				}
 			}
 		}
 
@@ -94,7 +123,7 @@ public class MouseController : MonoBehaviour
 		}
 	}
 
-	private void HideClickingIcon()
+	private void HideClickedIcon()
 	{
 		selectedSprite = null;
 		transparentIcon.sprite = null;

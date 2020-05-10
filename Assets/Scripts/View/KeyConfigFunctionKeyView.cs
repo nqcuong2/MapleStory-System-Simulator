@@ -1,30 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
-public class KeyConfigFunctionKeyView : MonoBehaviour, InteractableSprite
+public class KeyConfigFunctionKeyView : InteractableSprite
 {
-	[SerializeField] KeyConfigView.FunctionType functionType;
-
 	private RectTransform rectTransform;
 	private Vector2 defaultPos;
-
-	public KeyConfigView.FunctionType GetFunctionType()
-	{
-		return functionType;
-	}
-
-	public Sprite GetSprite()
-	{
-		return GetComponent<Image>().sprite;
-	}
 
 	private void Awake()
 	{
 		rectTransform = GetComponent<RectTransform>();
 		defaultPos = transform.localPosition;
+	}
+
+	public override void Reset()
+	{
+		gameObject.SetActive(true);
+		CurrentSlot = null;
 	}
 
 	// Start is called before the first frame update

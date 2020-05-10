@@ -10,8 +10,15 @@ public class KeySlotView : MonoBehaviour
 		return keyCode;
 	}
 
+	public InteractableSprite AssignedFunctionKey
+	{
+		get;
+		set;
+	}
+
 	void Awake()
 	{
+		AssignedFunctionKey = null;
 	}
 
 	// Start is called before the first frame update
