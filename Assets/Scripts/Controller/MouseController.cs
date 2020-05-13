@@ -80,40 +80,41 @@ public class MouseController : MonoBehaviour
 				}
 				else
 				{
-					if (!clickedKeySlot)
+					if (result.gameObject.name == "Reset_Function_Area")
 					{
-						clickedKeySlot = result.gameObject.GetComponent<KeySlotView>();
+						KeyConfigView.Instance.ResetFunctionKey(selectedSprite);
+						break;
+					}
+
+					clickedKeySlot = result.gameObject.GetComponent<KeySlotView>();
+					if (clickedKeySlot)
+					{
+						bool requireUpdate = true;
+						if (clickedKeySlot.AssignedFunctionKey != null)
+						{
+							if (clickedKeySlot.AssignedFunctionKey.GetFunctionType() == selectedSprite.GetFunctionType())
+							{
+								requireUpdate = false;
+							}
+							else
+							{
+								clickedKeySlot.AssignedFunctionKey.Reset();
+							}
+						}
+
+						if (requireUpdate)
+						{
+							KeyConfigView.Instance.UpdateKey(clickedKeySlot, selectedSprite);
+						}
+
+						break;
 					}
 				}
 			}
 
-			if (selectedSprite != null)
+			if (selectedSprite != null && !found)
 			{
-				if (clickedKeySlot)
-				{
-					bool requireUpdate = true;
-					if (clickedKeySlot.AssignedFunctionKey != null)
-					{
-						if (clickedKeySlot.AssignedFunctionKey.GetFunctionType() == selectedSprite.GetFunctionType())
-						{
-							requireUpdate = false;
-						}
-						else
-						{
-							clickedKeySlot.AssignedFunctionKey.Reset();
-						}
-					}
-
-					if (requireUpdate)
-					{
-						KeyConfigView.Instance.UpdateKey(clickedKeySlot, selectedSprite);
-					}
-				}
-
-				if (!found)
-				{
-					HideClickedIcon();
-				}
+				HideClickedIcon();
 			}
 		}
 

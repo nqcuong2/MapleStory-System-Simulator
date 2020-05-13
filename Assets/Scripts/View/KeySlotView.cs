@@ -21,15 +21,17 @@ public class KeySlotView : MonoBehaviour
 		AssignedFunctionKey = null;
 	}
 
-	// Start is called before the first frame update
-	void Start()
-    {
-        
-    }
+	public void Reset()
+	{
+		GetComponent<Image>().color = Constants.TRANSPARENT_COLOR;
+		AssignedFunctionKey = null;
+	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	public void UpdateFunctionKey(InteractableSprite functionKey)
+	{
+		GetComponent<Image>().color = Constants.OPAQUE_COLOR;
+		GetComponent<Image>().sprite = functionKey.GetSprite();
+		AssignedFunctionKey = functionKey;
+		functionKey.CurrentSlot = this;
+	}
 }

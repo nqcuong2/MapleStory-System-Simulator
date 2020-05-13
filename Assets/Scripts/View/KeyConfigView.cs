@@ -11,11 +11,27 @@ public class KeyConfigView : MonoBehaviour
 	public enum FunctionType
 	{
 		NONE,
-		STATS,
-		JUMP,
-		ATTACK,
 		MAIN_MENU,
-		MENU
+		SAY,
+		EQUIPMENT,
+		ITEMS,
+		CHAR_INFO,
+		STATS,
+		SKILLS,
+		QUEST,
+		MENU,
+		QUICK_SLOTS,
+		PICKUP,
+		SIT,
+		ATTACK,
+		JUMP,
+		INTERACT,
+		SOUL_WEAPON,
+		WORLD_MAP,
+		MINIMAP,
+		KEY_BINDING,
+		MONSTER_BOOK,
+		EXPRESSION
 	}
 
 	[SerializeField] KeyConfigFunctionKeyView[] keyConfigFunctionKeyViews;
@@ -27,10 +43,12 @@ public class KeyConfigView : MonoBehaviour
 	[SerializeField] KeySlotView leftAltSlot;
 	[SerializeField] KeySlotView rightAltSlot;
 
-	private KeyConfigController keyConfigController;
+	[SerializeField] Button defaultSetup;
+	[SerializeField] Button clearAll;
+	[SerializeField] Button ok;
+	[SerializeField] Button cancel;
 
-	private Color TRANSPARENT_COLOR = new Color(255, 255, 255, 0);
-	private Color OPAQUE_COLOR = new Color(255, 255, 255, 255);
+	private KeyConfigController keyConfigController;
 
 	private void Awake()
 	{
@@ -41,8 +59,13 @@ public class KeyConfigView : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-        
-    }
+		SetupButtons();
+	}
+
+	private void SetupButtons()
+	{
+		
+	}
 
 	private void Update()
 	{
@@ -71,37 +94,10 @@ public class KeyConfigView : MonoBehaviour
 		var previousSlot = functionKey.CurrentSlot;
 		if (previousSlot)
 		{
-			var prevSlotKeyCode = previousSlot.GetKeyCode();
-			if (prevSlotKeyCode == KeyCode.LeftShift)
-			{
-				HideFunctionKeyOfSlot(rightShiftSlot);
-			}
-			else if (prevSlotKeyCode == KeyCode.RightShift)
-			{
-				HideFunctionKeyOfSlot(leftShiftSlot);
-			}
-			else if (prevSlotKeyCode == KeyCode.LeftControl)
-			{
-				HideFunctionKeyOfSlot(rightControlSlot);
-			}
-			else if (prevSlotKeyCode == KeyCode.RightControl)
-			{
-				HideFunctionKeyOfSlot(leftControlSlot);
-			}
-			else if (prevSlotKeyCode == KeyCode.LeftAlt)
-			{
-				HideFunctionKeyOfSlot(rightAltSlot);
-			}
-			else if (prevSlotKeyCode == KeyCode.RightAlt)
-			{
-				HideFunctionKeyOfSlot(leftAltSlot);
-			}
-
 			HideFunctionKeyOfSlot(previousSlot);
 		}
 
 		ShowFunctionKeyOfSlot(selectedSlot, functionKey);
-		ShowFunctionKeyOfOtherModifierSlot(selectedSlot.GetKeyCode(), functionKey);
 
 		keyConfigController.MapFunctionToKeyboardSlot(selectedSlot.GetKeyCode(), functionKey.GetFunctionType());
 		selectedSlot.AssignedFunctionKey.gameObject.SetActive(false);
@@ -109,43 +105,73 @@ public class KeyConfigView : MonoBehaviour
 
 	private void HideFunctionKeyOfSlot(KeySlotView slot)
 	{
-		slot.GetComponent<Image>().color = TRANSPARENT_COLOR;
-		slot.AssignedFunctionKey = null;
+		slot.Reset();
+		HideFunctionKeyOfOtherModifierSlot(slot.GetKeyCode());
+	}
+
+	private void HideFunctionKeyOfOtherModifierSlot(KeyCode keyCode)
+	{
+		switch (keyCode)
+		{
+			case KeyCode.LeftShift:
+				rightShiftSlot.Reset();
+				break;
+			case KeyCode.RightShift:
+				leftShiftSlot.Reset();
+				break;
+			case KeyCode.LeftControl:
+				rightControlSlot.Reset();
+				break;
+			case KeyCode.RightControl:
+				leftControlSlot.Reset();
+				break;
+			case KeyCode.LeftAlt:
+				rightAltSlot.Reset();
+				break;
+			case KeyCode.RightAlt:
+				leftAltSlot.Reset();
+				break;
+		}
 	}
 
 	private void ShowFunctionKeyOfSlot(KeySlotView slot, InteractableSprite functionKey)
 	{
-		slot.GetComponent<Image>().color = OPAQUE_COLOR;
-		slot.GetComponent<Image>().sprite = functionKey.GetSprite();
-		slot.AssignedFunctionKey = functionKey;
-		functionKey.CurrentSlot = slot;
+		slot.UpdateFunctionKey(functionKey);
+		ShowFunctionKeyOfOtherModifierSlot(slot.GetKeyCode(), functionKey);
 	}
 
 	private void ShowFunctionKeyOfOtherModifierSlot(KeyCode keyCode, InteractableSprite functionKey)
 	{
-		if (keyCode == KeyCode.LeftShift)
+		switch (keyCode)
 		{
-			ShowFunctionKeyOfSlot(rightShiftSlot, functionKey);
+			case KeyCode.LeftShift:
+				rightShiftSlot.UpdateFunctionKey(functionKey);
+				break;
+			case KeyCode.RightShift:
+				leftShiftSlot.UpdateFunctionKey(functionKey);
+				break;
+			case KeyCode.LeftControl:
+				rightControlSlot.UpdateFunctionKey(functionKey);
+				break;
+			case KeyCode.RightControl:
+				leftControlSlot.UpdateFunctionKey(functionKey);
+				break;
+			case KeyCode.LeftAlt:
+				rightAltSlot.UpdateFunctionKey(functionKey);
+				break;
+			case KeyCode.RightAlt:
+				leftAltSlot.UpdateFunctionKey(functionKey);
+				break;
 		}
-		else if (keyCode == KeyCode.RightShift)
+	}
+
+	public void ResetFunctionKey(InteractableSprite functionKey)
+	{
+		if (functionKey.CurrentSlot)
 		{
-			ShowFunctionKeyOfSlot(leftShiftSlot, functionKey);
-		}
-		else if (keyCode == KeyCode.LeftControl)
-		{
-			ShowFunctionKeyOfSlot(rightControlSlot, functionKey);
-		}
-		else if (keyCode == KeyCode.RightControl)
-		{
-			ShowFunctionKeyOfSlot(leftControlSlot, functionKey);
-		}
-		else if (keyCode == KeyCode.LeftAlt)
-		{
-			ShowFunctionKeyOfSlot(rightAltSlot, functionKey);
-		}
-		else if (keyCode == KeyCode.RightAlt)
-		{
-			ShowFunctionKeyOfSlot(leftAltSlot, functionKey);
+			keyConfigController.MapFunctionToKeyboardSlot(functionKey.CurrentSlot.GetKeyCode(), FunctionType.NONE);
+			HideFunctionKeyOfSlot(functionKey.CurrentSlot);
+			functionKey.Reset();
 		}
 	}
 }
