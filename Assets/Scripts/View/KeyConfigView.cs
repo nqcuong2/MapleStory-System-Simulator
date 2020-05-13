@@ -64,10 +64,22 @@ public class KeyConfigView : MonoBehaviour
 
 	private void SetupButtons()
 	{
-		
+		cancel.onClick.AddListener(() => OnCancelClicked());
+		ok.onClick.AddListener(() => OnOkClicked());
 	}
 
-	// Update is called once per frame
+	private void OnCancelClicked()
+	{
+		keyConfigController.ClearChanges();
+		gameObject.SetActive(false);
+	}
+
+	private void OnOkClicked()
+	{
+		keyConfigController.SaveNewChanges();
+		gameObject.SetActive(false);
+	}
+
 	public void UpdateKey(KeySlotView selectedSlot, InteractableSprite functionKey)
 	{
 		var previousSlot = functionKey.CurrentSlot;
@@ -78,7 +90,7 @@ public class KeyConfigView : MonoBehaviour
 
 		ShowFunctionKeyOfSlot(selectedSlot, functionKey);
 
-		InputManager.Instance.UpdateKeyMapping(selectedSlot.GetKeyCode(), functionKey.GetFunctionType());
+		keyConfigController.MapFunctionToKeyboardSlot(selectedSlot.GetKeyCode(), functionKey.GetFunctionType());
 		selectedSlot.AssignedFunctionKey.gameObject.SetActive(false);
 	}
 
@@ -148,9 +160,14 @@ public class KeyConfigView : MonoBehaviour
 	{
 		if (functionKey.CurrentSlot)
 		{
-			InputManager.Instance.UpdateKeyMapping(functionKey.CurrentSlot.GetKeyCode(), FunctionType.NONE);
+			keyConfigController.MapFunctionToKeyboardSlot(functionKey.CurrentSlot.GetKeyCode(), FunctionType.NONE);
 			HideFunctionKeyOfSlot(functionKey.CurrentSlot);
 			functionKey.Reset();
 		}
+	}
+
+	public void ExecuteActionFromPressedKey(KeyCode keyCode)
+	{
+		keyConfigController.ExecuteActionFromPressedKey(keyCode);
 	}
 }

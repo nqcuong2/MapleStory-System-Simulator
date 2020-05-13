@@ -49,66 +49,16 @@ public class MouseController : MonoBehaviour
     {
 		if (Input.GetKeyDown(KeyCode.Mouse0))
 		{
-			PointerEventData pointerData = new PointerEventData(EventSystem.current);
-			List<RaycastResult> results = new List<RaycastResult>();
+			CheckMouseClick();
+		}
 
-			//Raycast using the Graphics Raycaster and mouse click position
-			pointerData.position = Input.mousePosition;
-			this.raycaster.Raycast(pointerData, results);
-
-			if (results.Count > 0)
-			{
-				if (selectedSprite == null)
-				{
-					KeySlotView clickedKeySlot = results[0].gameObject.GetComponent<KeySlotView>();
-					if (clickedKeySlot)
-					{
-						selectedSprite = clickedKeySlot.AssignedFunctionKey;
-					}
-					else
-					{
-						selectedSprite = results[0].gameObject.GetComponent<InteractableSprite>();
-					}
-
-					if (selectedSprite)
-					{
-						ShowTransparentWithGivenIcon();
-					}
-				}
-				else
-				{
-					if (results[0].gameObject.name == "Reset_Function_Area")
-					{
-						KeyConfigView.Instance.ResetFunctionKey(selectedSprite);
-					}
-					else
-					{
-						KeySlotView clickedKeySlot = results[0].gameObject.GetComponent<KeySlotView>();
-						if (clickedKeySlot)
-						{
-							bool requireUpdate = true;
-							if (clickedKeySlot.AssignedFunctionKey != null)
-							{
-								if (clickedKeySlot.AssignedFunctionKey.GetFunctionType() == selectedSprite.GetFunctionType())
-								{
-									requireUpdate = false;
-								}
-								else
-								{
-									clickedKeySlot.AssignedFunctionKey.Reset();
-								}
-							}
-
-							if (requireUpdate)
-							{
-								KeyConfigView.Instance.UpdateKey(clickedKeySlot, selectedSprite);
-							}
-						}
-					}
-
-					HideClickedIcon();
-				}
-			}
+		if (Input.GetKeyDown(KeyCode.LeftShift))
+		{
+			KeyConfigView.Instance.ExecuteActionFromPressedKey(KeyCode.LeftShift);
+		}
+		else if (Input.GetKeyDown(KeyCode.RightShift))
+		{
+			KeyConfigView.Instance.ExecuteActionFromPressedKey(KeyCode.RightShift);
 		}
 
 		if (transparentIcon.gameObject.activeSelf)
@@ -117,10 +67,83 @@ public class MouseController : MonoBehaviour
 		}
 	}
 
+	private void CheckMouseClick()
+	{
+		PointerEventData pointerData = new PointerEventData(EventSystem.current);
+		List<RaycastResult> results = new List<RaycastResult>();
+
+		//Raycast using the Graphics Raycaster and mouse click position
+		pointerData.position = Input.mousePosition;
+		this.raycaster.Raycast(pointerData, results);
+
+		if (results.Count > 0)
+		{
+			if (selectedSprite == null)
+			{
+				KeySlotView clickedKeySlot = results[0].gameObject.GetComponent<KeySlotView>();
+				if (clickedKeySlot)
+				{
+					selectedSprite = clickedKeySlot.AssignedFunctionKey;
+				}
+				else
+				{
+					selectedSprite = results[0].gameObject.GetComponent<InteractableSprite>();
+				}
+
+				if (selectedSprite)
+				{
+					ShowTransparentWithGivenIcon();
+				}
+			}
+			else
+			{
+				if (results[0].gameObject.name == "Reset_Function_Area")
+				{
+					KeyConfigView.Instance.ResetFunctionKey(selectedSprite);
+				}
+				else
+				{
+					KeySlotView clickedKeySlot = results[0].gameObject.GetComponent<KeySlotView>();
+					if (clickedKeySlot)
+					{
+						bool requireUpdate = true;
+						if (clickedKeySlot.AssignedFunctionKey != null)
+						{
+							if (clickedKeySlot.AssignedFunctionKey.GetFunctionType() == selectedSprite.GetFunctionType())
+							{
+								requireUpdate = false;
+							}
+							else
+							{
+								clickedKeySlot.AssignedFunctionKey.Reset();
+							}
+						}
+
+						if (requireUpdate)
+						{
+							KeyConfigView.Instance.UpdateKey(clickedKeySlot, selectedSprite);
+						}
+					}
+				}
+
+				HideClickedIcon();
+			}
+		}
+	}
+
 	private void HideClickedIcon()
 	{
 		selectedSprite = null;
 		transparentIcon.sprite = null;
 		transparentIcon.gameObject.SetActive(false);
+	}
+
+	private void OnGUI()
+	{
+		Event e = Event.current;
+		if (e.type == EventType.KeyDown && e.keyCode != KeyCode.None)
+		{
+			KeyConfigView.Instance.ExecuteActionFromPressedKey(e.keyCode);
+		}
 	}
 }

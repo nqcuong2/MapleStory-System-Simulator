@@ -16092,7 +16092,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1490766610}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 38f3539c5b4173f45993919360f6f7f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -19745,7 +19745,7 @@ MonoBehaviour:
   defaultSetup: {fileID: 0}
   clearAll: {fileID: 0}
   ok: {fileID: 1490766612}
-  cancel: {fileID: 0}
+  cancel: {fileID: 438256700}
 --- !u!222 &1771514973
 CanvasRenderer:
   m_ObjectHideFlags: 0
