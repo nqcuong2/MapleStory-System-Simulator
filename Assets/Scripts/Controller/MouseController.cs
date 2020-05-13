@@ -56,65 +56,58 @@ public class MouseController : MonoBehaviour
 			pointerData.position = Input.mousePosition;
 			this.raycaster.Raycast(pointerData, results);
 
-			bool found = false;
-			KeySlotView clickedKeySlot = null;
-			foreach (RaycastResult result in results)
+			if (results.Count > 0)
 			{
 				if (selectedSprite == null)
 				{
-					clickedKeySlot = result.gameObject.GetComponent<KeySlotView>();
+					KeySlotView clickedKeySlot = results[0].gameObject.GetComponent<KeySlotView>();
 					if (clickedKeySlot)
 					{
 						selectedSprite = clickedKeySlot.AssignedFunctionKey;
 					}
 					else
 					{
-						selectedSprite = result.gameObject.GetComponent<InteractableSprite>();
+						selectedSprite = results[0].gameObject.GetComponent<InteractableSprite>();
 					}
 
-					if (selectedSprite != null)
+					if (selectedSprite)
 					{
 						ShowTransparentWithGivenIcon();
-						found = true;
 					}
 				}
 				else
 				{
-					if (result.gameObject.name == "Reset_Function_Area")
+					if (results[0].gameObject.name == "Reset_Function_Area")
 					{
 						KeyConfigView.Instance.ResetFunctionKey(selectedSprite);
-						break;
 					}
-
-					clickedKeySlot = result.gameObject.GetComponent<KeySlotView>();
-					if (clickedKeySlot)
+					else
 					{
-						bool requireUpdate = true;
-						if (clickedKeySlot.AssignedFunctionKey != null)
+						KeySlotView clickedKeySlot = results[0].gameObject.GetComponent<KeySlotView>();
+						if (clickedKeySlot)
 						{
-							if (clickedKeySlot.AssignedFunctionKey.GetFunctionType() == selectedSprite.GetFunctionType())
+							bool requireUpdate = true;
+							if (clickedKeySlot.AssignedFunctionKey != null)
 							{
-								requireUpdate = false;
+								if (clickedKeySlot.AssignedFunctionKey.GetFunctionType() == selectedSprite.GetFunctionType())
+								{
+									requireUpdate = false;
+								}
+								else
+								{
+									clickedKeySlot.AssignedFunctionKey.Reset();
+								}
 							}
-							else
+
+							if (requireUpdate)
 							{
-								clickedKeySlot.AssignedFunctionKey.Reset();
+								KeyConfigView.Instance.UpdateKey(clickedKeySlot, selectedSprite);
 							}
 						}
-
-						if (requireUpdate)
-						{
-							KeyConfigView.Instance.UpdateKey(clickedKeySlot, selectedSprite);
-						}
-
-						break;
 					}
-				}
-			}
 
-			if (selectedSprite != null && !found)
-			{
-				HideClickedIcon();
+					HideClickedIcon();
+				}
 			}
 		}
 

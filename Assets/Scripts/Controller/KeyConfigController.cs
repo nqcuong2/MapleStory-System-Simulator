@@ -19,6 +19,17 @@ public class KeyConfigController
 		functionTypeToFunctionMap.Add(KeyConfigView.FunctionType.NONE, () => { });
 		functionTypeToFunctionMap.Add(KeyConfigView.FunctionType.MAIN_MENU, () => { UnityEditor.EditorApplication.isPlaying = false; });
 		functionTypeToFunctionMap.Add(KeyConfigView.FunctionType.STATS, () => ToggleStatsWindow());
+		functionTypeToFunctionMap.Add(KeyConfigView.FunctionType.KEY_BINDING, () => ToggleKeyBindingWindow());
+	}
+
+	private void ToggleStatsWindow()
+	{
+		GameObjectUtils.ToggleWindow(MainStatsView.Instance.gameObject);
+	}
+
+	private void ToggleKeyBindingWindow()
+	{
+		GameObjectUtils.ToggleWindow(KeyConfigView.Instance.gameObject);
 	}
 
 	private void InitializeKeyToFunctionMap()
@@ -96,11 +107,6 @@ public class KeyConfigController
 		inputKeyToFunctionTypeMap.Add(KeyCode.Delete, KeyConfigView.FunctionType.NONE);
 		inputKeyToFunctionTypeMap.Add(KeyCode.End, KeyConfigView.FunctionType.NONE);
 		inputKeyToFunctionTypeMap.Add(KeyCode.PageDown, KeyConfigView.FunctionType.NONE);
-	}
-
-	private void ToggleStatsWindow()
-	{
-		GameObjectUtils.ToggleWindow(MainStatsView.Instance.gameObject);
 	}
 
 	public void MapFunctionToKeyboardSlot(KeyCode keyCode, KeyConfigView.FunctionType functionType)
