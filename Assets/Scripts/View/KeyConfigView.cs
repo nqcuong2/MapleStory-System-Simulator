@@ -48,6 +48,7 @@ public class KeyConfigView : MonoBehaviour
 	[SerializeField] Button ok;
 	[SerializeField] Button cancel;
 
+	private Dictionary<InteractableSprite, KeySlotView> tempSlotSpritePairs = new Dictionary<InteractableSprite, KeySlotView>();
 	private KeyConfigController keyConfigController;
 
 	private void Awake()
@@ -71,17 +72,43 @@ public class KeyConfigView : MonoBehaviour
 	private void OnCancelClicked()
 	{
 		keyConfigController.ClearChanges();
+		ResetChangedKeyBinding();
 		gameObject.SetActive(false);
+	}
+
+	private void ResetChangedKeyBinding()
+	{
+		foreach (InteractableSprite functionKey in tempSlotSpritePairs.Keys)
+		{
+			if (functionKey.CurrentSlot)
+			{
+				HideFunctionKeyOfSlot(functionKey.CurrentSlot);
+			}
+
+			if (tempSlotSpritePairs[functionKey])
+			{
+				ShowFunctionKeyOfSlot(tempSlotSpritePairs[functionKey], functionKey);
+			}
+			else
+			{
+				functionKey.Reset();
+			}
+		}
+
+		tempSlotSpritePairs.Clear();
 	}
 
 	private void OnOkClicked()
 	{
 		keyConfigController.SaveNewChanges();
+		tempSlotSpritePairs.Clear();
 		gameObject.SetActive(false);
 	}
 
 	public void UpdateKey(KeySlotView selectedSlot, InteractableSprite functionKey)
 	{
+		SaveUnchangedKeyStatus(functionKey);
+
 		var previousSlot = functionKey.CurrentSlot;
 		if (previousSlot)
 		{
@@ -91,7 +118,14 @@ public class KeyConfigView : MonoBehaviour
 		ShowFunctionKeyOfSlot(selectedSlot, functionKey);
 
 		keyConfigController.MapFunctionToKeyboardSlot(selectedSlot.GetKeyCode(), functionKey.GetFunctionType());
-		selectedSlot.AssignedFunctionKey.gameObject.SetActive(false);
+	}
+
+	private void SaveUnchangedKeyStatus(InteractableSprite functionKey)
+	{
+		if (!tempSlotSpritePairs.ContainsKey(functionKey))
+		{
+			tempSlotSpritePairs.Add(functionKey, functionKey.CurrentSlot);
+		}
 	}
 
 	private void HideFunctionKeyOfSlot(KeySlotView slot)
@@ -128,6 +162,7 @@ public class KeyConfigView : MonoBehaviour
 	private void ShowFunctionKeyOfSlot(KeySlotView slot, InteractableSprite functionKey)
 	{
 		slot.UpdateFunctionKey(functionKey);
+		functionKey.gameObject.SetActive(false);
 		ShowFunctionKeyOfOtherModifierSlot(slot.GetKeyCode(), functionKey);
 	}
 
@@ -160,6 +195,7 @@ public class KeyConfigView : MonoBehaviour
 	{
 		if (functionKey.CurrentSlot)
 		{
+			SaveUnchangedKeyStatus(functionKey);
 			keyConfigController.MapFunctionToKeyboardSlot(functionKey.CurrentSlot.GetKeyCode(), FunctionType.NONE);
 			HideFunctionKeyOfSlot(functionKey.CurrentSlot);
 			functionKey.Reset();
