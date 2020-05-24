@@ -12,21 +12,13 @@ public class ExpBarView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 	private string currLvExp;
 	private string nextLvExp;
 	private string formattedExpPercent;
+    public static ExpBarView Instance { get; private set; }
 
-	private static ExpBarView instance;
-	public static ExpBarView Instance
-	{
-		get
-		{
-			return instance;
-		}
-	}
-
-	protected ExpBarView() { }
+    protected ExpBarView() { }
 
 	private void Awake()
 	{
-		instance = this;
+		Instance = this;
 	}
 
 	// Start is called before the first frame update

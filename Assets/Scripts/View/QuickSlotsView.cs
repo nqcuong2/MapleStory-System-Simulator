@@ -17,6 +17,7 @@ public class QuickSlotsView : MonoBehaviour
 	private Vector2 foldedPos;
 	private Vector2 expandedPos;
 	private const float ANIMATION_TIME = 1.5f;
+    private const float ANIMATION_SPEED = 3;
 	private bool isAnimationRunning;
 
 	private QuickSlotsView() {}
@@ -36,8 +37,8 @@ public class QuickSlotsView : MonoBehaviour
 
 	private void SetupButtons()
 	{
-		foldButton.onClick.AddListener(() => { isAnimationRunning = true; });//StartCoroutine(FoldQuickSlots()));
-		expandButton.onClick.AddListener(() => { isAnimationRunning = true; }); //StartCoroutine(ExpandQuickSlots()));
+		foldButton.onClick.AddListener(() => { StartCoroutine(FoldQuickSlots()); });
+		expandButton.onClick.AddListener(() => { StartCoroutine(ExpandQuickSlots()); });
 
 		foldButton.gameObject.SetActive(false);
 		expandButton.gameObject.SetActive(true);
@@ -45,58 +46,29 @@ public class QuickSlotsView : MonoBehaviour
 
 	private IEnumerator FoldQuickSlots()
 	{
-		float startTime = Time.deltaTime;
-		while (Time.time < startTime + ANIMATION_TIME)
-		{
-			rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, foldedPos, (Time.time - startTime) / ANIMATION_TIME);
-			yield return null;
-		}
+        float time = 0;
+        while (time < ANIMATION_TIME)
+        {
+            time += Time.deltaTime * ANIMATION_SPEED;
+            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, foldedPos, time);
+            yield return null;
+        }
 
-		foldButton.gameObject.SetActive(false);
+        foldButton.gameObject.SetActive(false);
 		expandButton.gameObject.SetActive(true);
 	}
 
 	private IEnumerator ExpandQuickSlots()
 	{
-		float startTime = 0;
-		while (startTime < ANIMATION_TIME)
+		float time = 0;
+		while (time < ANIMATION_TIME)
 		{
-			rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, expandedPos, (Time.time - startTime) / ANIMATION_TIME);
+            time += Time.deltaTime * ANIMATION_SPEED;
+            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, expandedPos, time);
 			yield return null;
 		}
 
-		//rectTransform.anchoredPosition = expandedPos;
-
 		foldButton.gameObject.SetActive(true);
 		expandButton.gameObject.SetActive(false);
-	}
-
-	private void Update()
-	{
-		if (isAnimationRunning)
-		{
-			if (foldButton.gameObject.activeSelf)
-			{
-				rectTransform.anchoredPosition = Vector2.MoveTowards(rectTransform.anchoredPosition, foldedPos, Time.deltaTime * 600f);
-
-				if (rectTransform.anchoredPosition.x >= foldedPos.x)
-				{
-					isAnimationRunning = false;
-					foldButton.gameObject.SetActive(false);
-					expandButton.gameObject.SetActive(true);
-				}
-			}
-			else
-			{
-				rectTransform.anchoredPosition = Vector2.MoveTowards(rectTransform.anchoredPosition, expandedPos, Time.deltaTime * 600f);
-
-				if (rectTransform.anchoredPosition.x <= expandedPos.x)
-				{
-					isAnimationRunning = false;
-					foldButton.gameObject.SetActive(true);
-					expandButton.gameObject.SetActive(false);
-				}
-			}
-		}
 	}
 }

@@ -51,7 +51,8 @@ public class KeyConfigView : MonoBehaviour
 	private Dictionary<InteractableSprite, KeySlotView> tempSlotSpritePairs = new Dictionary<InteractableSprite, KeySlotView>();
 	private KeyConfigController keyConfigController;
 
-	private void Awake()
+    #region Methods
+    private void Awake()
 	{
 		Instance = this;
 		keyConfigController = new KeyConfigController();
@@ -204,6 +205,8 @@ public class KeyConfigView : MonoBehaviour
 
 	public void ExecuteActionFromPressedKey(KeyCode keyCode)
 	{
-		keyConfigController.ExecuteActionFromPressedKey(keyCode);
+        keyConfigController.ExecuteActionFromPressedKey(keyCode);
 	}
+    #endregion
+
 }

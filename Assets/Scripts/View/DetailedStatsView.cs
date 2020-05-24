@@ -24,21 +24,13 @@ public class DetailedStatsView : MonoBehaviour
 	[SerializeField] TMP_Text speed;
 	[SerializeField] TMP_Text jump;
 	[SerializeField] TMP_Text honorExp;
+    public static DetailedStatsView Instance { get; private set; }
 
-	private static DetailedStatsView instance;
-	public static DetailedStatsView Instance
-	{
-		get
-		{
-			return instance;
-		}
-	}
-
-	protected DetailedStatsView() { }
+    protected DetailedStatsView() { }
 
 	private void Awake()
 	{
-		instance = this;
+		Instance = this;
 	}
 
 	// Start is called before the first frame update
