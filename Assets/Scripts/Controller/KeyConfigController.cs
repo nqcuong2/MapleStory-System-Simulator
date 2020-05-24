@@ -5,13 +5,17 @@ using UnityEngine;
 public class KeyConfigController
 {
 	#region Class Fields
-	private Dictionary<KeyCode, KeyConfigView.FunctionType> inputKeyToFunctionTypeMap;
-	private Dictionary<KeyCode, KeyConfigView.FunctionType> tempMap = new Dictionary<KeyCode, KeyConfigView.FunctionType>();
+	private Dictionary<int, KeyConfigView.FunctionType> inputKeyToFunctionTypeMap;
+	private Dictionary<int, KeyConfigView.FunctionType> tempMap = new Dictionary<int, KeyConfigView.FunctionType>();
 	private Dictionary<KeyConfigView.FunctionType, Action> functionTypeToFunctionMap;
-	#endregion
 
-	#region Constructor
-	public KeyConfigController()
+    private const int KEYCODE_SHIFT = 1000;
+    private const int KEYCODE_ALT = 1001;
+    private const int KEYCODE_CONTROL = 1002;
+    #endregion
+
+    #region Constructor
+    public KeyConfigController()
 	{
 		IntializeFunctionTypeToFunctionMap();
 		InitializeKeyToFunctionMap();
@@ -40,100 +44,137 @@ public class KeyConfigController
 
 	private void InitializeKeyToFunctionMap()
 	{
-		inputKeyToFunctionTypeMap = new Dictionary<KeyCode, KeyConfigView.FunctionType>();
-		inputKeyToFunctionTypeMap.Add(KeyCode.Escape, KeyConfigView.FunctionType.MAIN_MENU);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F1, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F2, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F3, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F4, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F5, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F6, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F7, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F8, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F9, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F10, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F11, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F12, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.BackQuote, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Alpha1, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Alpha2, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Alpha3, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Alpha4, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Alpha5, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Alpha6, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Alpha7, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Alpha8, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Alpha9, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Alpha0, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Minus, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Equals, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Q, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.W, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.E, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.R, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.T, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Y, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.U, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.I, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.O, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.P, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.LeftBracket, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.RightBracket, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Backslash, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.A, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.S, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.D, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.F, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.G, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.H, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.J, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.K, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.L, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Semicolon, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Quote, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Z, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.X, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.C, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.V, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.B, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.N, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.M, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Comma, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Period, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Space, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.LeftShift, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.RightShift, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.LeftControl, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.RightControl, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.LeftAlt, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.RightAlt, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Insert, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Home, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.PageUp, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.Delete, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.End, KeyConfigView.FunctionType.NONE);
-		inputKeyToFunctionTypeMap.Add(KeyCode.PageDown, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap = new Dictionary<int, KeyConfigView.FunctionType>();
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Escape, KeyConfigView.FunctionType.MAIN_MENU);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F1, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F2, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F3, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F4, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F5, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F6, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F7, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F8, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F9, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F10, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F11, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F12, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.BackQuote, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha1, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha2, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha3, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha4, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha5, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha6, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha7, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha8, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha9, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha0, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Minus, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Equals, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Q, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.W, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.E, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.R, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.T, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Y, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.U, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.I, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.O, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.P, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.LeftBracket, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.RightBracket, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Backslash, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.A, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.S, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.D, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.F, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.G, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.H, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.J, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.K, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.L, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Semicolon, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Quote, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Z, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.X, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.C, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.V, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.B, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.N, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.M, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Comma, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Period, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Space, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add(KEYCODE_SHIFT, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add(KEYCODE_CONTROL, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add(KEYCODE_ALT, KeyConfigView.FunctionType.NONE);
+        inputKeyToFunctionTypeMap.Add((int)KeyCode.Insert, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Home, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.PageUp, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.Delete, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.End, KeyConfigView.FunctionType.NONE);
+		inputKeyToFunctionTypeMap.Add((int)KeyCode.PageDown, KeyConfigView.FunctionType.NONE);
 	}
 
-	public void MapFunctionToKeyboardSlot(KeyCode keyCode, KeyConfigView.FunctionType functionType)
+	public void MapFunctionToKeyboardSlot(KeyCode keycode, KeyConfigView.FunctionType functionType)
 	{
-		RemoveFunctionFromKey(keyCode);
-		AddFunctionToKey(keyCode, functionType);
+        int convertedKeycode = ConvertKeyCodeToInt(keycode);
+		RemoveFunctionFromKey(functionType);
+		AddFunctionToKey(convertedKeycode, functionType);
 	}
 
-	private void RemoveFunctionFromKey(KeyCode keyCode)
+    private int ConvertKeyCodeToInt(KeyCode keycode)
+    {
+        if (keycode == KeyCode.LeftShift || keycode == KeyCode.RightShift)
+        {
+            return KEYCODE_SHIFT;
+        }
+        else if (keycode == KeyCode.LeftControl || keycode == KeyCode.RightControl)
+        {
+            return KEYCODE_CONTROL;
+        }
+        else if (keycode == KeyCode.LeftAlt || keycode == KeyCode.RightAlt)
+        {
+            return KEYCODE_ALT;
+        }
+        else
+        {
+            return (int)keycode;
+        }
+    }
+
+	private void RemoveFunctionFromKey(KeyConfigView.FunctionType functionType)
 	{
-		if (tempMap.ContainsKey(keyCode))
-		{
-			tempMap[keyCode] = KeyConfigView.FunctionType.NONE;
-		}
-		else
-		{
-			tempMap.Add(keyCode, KeyConfigView.FunctionType.NONE);
-		}
-	}
+        foreach (int keycode in tempMap.Keys)
+        {
+            if (tempMap[keycode] == functionType)
+            {
+                tempMap[keycode] = KeyConfigView.FunctionType.NONE;
+                return;
+            }
+        }
 
-	private void AddFunctionToKey(KeyCode keyCode, KeyConfigView.FunctionType functionType)
+        int toRemoveKeycode = -1;
+        foreach (int keycode in inputKeyToFunctionTypeMap.Keys)
+        {
+            if (inputKeyToFunctionTypeMap[keycode] == functionType)
+            {
+                toRemoveKeycode = keycode;
+                break;
+            }
+        }
+
+        if (tempMap.ContainsKey(toRemoveKeycode))
+        {
+            tempMap[toRemoveKeycode] = KeyConfigView.FunctionType.NONE;
+        }
+        else
+        {
+            tempMap.Add(toRemoveKeycode, KeyConfigView.FunctionType.NONE);
+        }
+    }
+
+	private void AddFunctionToKey(int keyCode, KeyConfigView.FunctionType functionType)
 	{
 		if (tempMap.ContainsKey(keyCode))
 		{
@@ -147,42 +188,22 @@ public class KeyConfigController
 
 	public void ExecuteActionFromPressedKey(KeyCode keyCode)
 	{
-		if (tempMap.ContainsKey(keyCode))
+        int convertedKeycode = ConvertKeyCodeToInt(keyCode);
+        if (tempMap.ContainsKey(convertedKeycode))
 		{
-			functionTypeToFunctionMap[tempMap[keyCode]].Invoke();
+			functionTypeToFunctionMap[tempMap[convertedKeycode]].Invoke();
 		}
-		else if (inputKeyToFunctionTypeMap.ContainsKey(keyCode))
+		else if (inputKeyToFunctionTypeMap.ContainsKey(convertedKeycode))
 		{
-			functionTypeToFunctionMap[inputKeyToFunctionTypeMap[keyCode]].Invoke();
+			functionTypeToFunctionMap[inputKeyToFunctionTypeMap[convertedKeycode]].Invoke();
 		}
 	}
 
 	public void SaveNewChanges()
 	{
-		foreach (KeyCode key in tempMap.Keys)
+		foreach (int keycode in tempMap.Keys)
 		{
-			inputKeyToFunctionTypeMap[key] = tempMap[key];
-			switch (key)
-			{
-				case KeyCode.LeftShift:
-					inputKeyToFunctionTypeMap[KeyCode.RightShift] = tempMap[key];
-					break;
-				case KeyCode.RightShift:
-					inputKeyToFunctionTypeMap[KeyCode.LeftShift] = tempMap[key];
-					break;
-				case KeyCode.LeftControl:
-					inputKeyToFunctionTypeMap[KeyCode.RightControl] = tempMap[key];
-					break;
-				case KeyCode.RightControl:
-					inputKeyToFunctionTypeMap[KeyCode.LeftControl] = tempMap[key];
-					break;
-				case KeyCode.LeftAlt:
-					inputKeyToFunctionTypeMap[KeyCode.RightAlt] = tempMap[key];
-					break;
-				case KeyCode.RightAlt:
-					inputKeyToFunctionTypeMap[KeyCode.LeftAlt] = tempMap[key];
-					break;
-			}
+			inputKeyToFunctionTypeMap[keycode] = tempMap[keycode];
 		}
 
 		ClearChanges();
