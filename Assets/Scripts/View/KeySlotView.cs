@@ -24,6 +24,7 @@ public class KeySlotView : MonoBehaviour
 	public void Reset()
 	{
 		GetComponent<Image>().color = Constants.TRANSPARENT_COLOR;
+        AssignedFunctionKey?.Reset();
 		AssignedFunctionKey = null;
 	}
 

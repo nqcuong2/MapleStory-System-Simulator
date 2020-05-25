@@ -164,13 +164,18 @@ public class KeyConfigController
             }
         }
 
-        if (tempMap.ContainsKey(toRemoveKeycode))
+        DisableKey(toRemoveKeycode);
+    }
+
+    private void DisableKey(int keycode)
+    {
+        if (tempMap.ContainsKey(keycode))
         {
-            tempMap[toRemoveKeycode] = KeyConfigView.FunctionType.NONE;
+            tempMap[keycode] = KeyConfigView.FunctionType.NONE;
         }
         else
         {
-            tempMap.Add(toRemoveKeycode, KeyConfigView.FunctionType.NONE);
+            tempMap.Add(keycode, KeyConfigView.FunctionType.NONE);
         }
     }
 
@@ -213,5 +218,13 @@ public class KeyConfigController
 	{
 		tempMap.Clear();
 	}
+
+    public void DisableAllKeys()
+    {
+        foreach (int keycode in inputKeyToFunctionTypeMap.Keys)
+        {
+            DisableKey(keycode);
+        }
+    }
 	#endregion
 }

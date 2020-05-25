@@ -34,6 +34,7 @@ public class KeyConfigView : MonoBehaviour
 		EXPRESSION
 	}
 
+    [SerializeField] KeySlotView[] keySlotViews;
 	[SerializeField] KeyConfigFunctionKeyView[] keyConfigFunctionKeyViews;
 
 	[SerializeField] KeySlotView leftShiftSlot;
@@ -68,6 +69,7 @@ public class KeyConfigView : MonoBehaviour
 	{
 		cancel.onClick.AddListener(() => OnCancelClicked());
 		ok.onClick.AddListener(() => OnOkClicked());
+        clearAll.onClick.AddListener(() => OnClearAllClicked());
 	}
 
 	private void OnCancelClicked()
@@ -105,6 +107,20 @@ public class KeyConfigView : MonoBehaviour
 		tempSlotSpritePairs.Clear();
 		gameObject.SetActive(false);
 	}
+
+    private void OnClearAllClicked()
+    {
+        foreach (KeySlotView slot in keySlotViews)
+        {
+            if (slot.AssignedFunctionKey)
+            {
+                SaveUnchangedKeyStatus(slot.AssignedFunctionKey);
+            }
+            slot.Reset();
+        }
+
+        keyConfigController.DisableAllKeys();
+    }
 
 	public void UpdateKey(KeySlotView selectedSlot, InteractableSprite functionKey)
 	{
