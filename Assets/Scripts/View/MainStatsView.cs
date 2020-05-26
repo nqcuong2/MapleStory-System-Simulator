@@ -32,14 +32,6 @@ public class MainStatsView : MonoBehaviour
 	[SerializeField] TMP_Text intelligence;
 	[SerializeField] TMP_Text luk;
 
-	[Header("Hyper Stats Btn Sprites")]
-	[SerializeField] Sprite normalHSShowState;
-	[SerializeField] Sprite normalHSHideState;
-
-	[Header("Detailed Stats Btn Sprites")]
-	[SerializeField] Sprite normalDSShowState;
-	[SerializeField] Sprite normalDSHideState;
-
 	private PlayerController playerController;
 
 	public static MainStatsView Instance { get; private set; }
@@ -48,7 +40,7 @@ public class MainStatsView : MonoBehaviour
 	{
 		Instance = this;
 		playerController = FindObjectOfType<PlayerController>();
-	}
+    }
 
 	// Start is called before the first frame update
 	void Start()
@@ -105,14 +97,14 @@ public class MainStatsView : MonoBehaviour
 		if (detailedStatsGO.activeSelf)
 		{
 			GameObjectUtils.HideGameObject(detailedStatsGO);
-		}
-		else
+        }
+        else
 		{
 			GameObjectUtils.ShowGameObject(detailedStatsGO);
-		}
-	}
+        }
+    }
 
-	public void UpdateStats(int lowerDmg, int upperDmg, int hp, int mp, int str, int dex, int intelligence, int luk)
+    public void UpdateStats(int lowerDmg, int upperDmg, int hp, int mp, int str, int dex, int intelligence, int luk)
 	{
 		dmg.text = lowerDmg + " ~ " + upperDmg;
 		DetailedStatsView.Instance.UpdateDmgText(dmg.text);

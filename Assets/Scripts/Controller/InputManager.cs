@@ -129,7 +129,11 @@ public class InputManager : MonoBehaviour
 				HideClickedIcon();
 			}
 		}
-	}
+        else
+        {
+            HideClickedIcon();
+        }
+    }
 
 	private void HideClickedIcon()
 	{
