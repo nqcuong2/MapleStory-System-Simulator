@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class QuickSlotsView : MonoBehaviour
 {
-	[SerializeField] Button foldButton;
-	[SerializeField] Button expandButton;
+	[SerializeField] Button toggleButton;
 
 	public QuickSlotsView Instance
 	{
@@ -17,7 +16,7 @@ public class QuickSlotsView : MonoBehaviour
 	private Vector2 foldedPos;
 	private Vector2 expandedPos;
 	private const float ANIMATION_TIME = 1.5f;
-    private const float ANIMATION_SPEED = 3;
+    private const float ANIMATION_SPEED = 2.5f;
 	private bool isAnimationRunning;
 
 	private QuickSlotsView() {}
@@ -26,7 +25,7 @@ public class QuickSlotsView : MonoBehaviour
 	{
 		Instance = this;
 		rectTransform = GetComponent<RectTransform>();
-		foldedPos = rectTransform.anchoredPosition;
+        foldedPos = rectTransform.anchoredPosition;
 		expandedPos = foldedPos - new Vector2(211, 0);
 	}
 
@@ -37,38 +36,18 @@ public class QuickSlotsView : MonoBehaviour
 
 	private void SetupButtons()
 	{
-		foldButton.onClick.AddListener(() => { StartCoroutine(FoldQuickSlots()); });
-		expandButton.onClick.AddListener(() => { StartCoroutine(ExpandQuickSlots()); });
-
-		foldButton.gameObject.SetActive(false);
-		expandButton.gameObject.SetActive(true);
+        toggleButton.onClick.AddListener(() => { StartCoroutine(ToggleQuickSlots()); });
 	}
 
-	private IEnumerator FoldQuickSlots()
+	private IEnumerator ToggleQuickSlots()
 	{
+        Vector2 dest = (Mathf.RoundToInt(rectTransform.anchoredPosition.x) == (int)(foldedPos.x)) ? expandedPos : foldedPos;
         float time = 0;
         while (time < ANIMATION_TIME)
         {
             time += Time.deltaTime * ANIMATION_SPEED;
-            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, foldedPos, time);
+            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, dest, time);
             yield return null;
         }
-
-        foldButton.gameObject.SetActive(false);
-		expandButton.gameObject.SetActive(true);
-	}
-
-	private IEnumerator ExpandQuickSlots()
-	{
-		float time = 0;
-		while (time < ANIMATION_TIME)
-		{
-            time += Time.deltaTime * ANIMATION_SPEED;
-            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, expandedPos, time);
-			yield return null;
-		}
-
-		foldButton.gameObject.SetActive(true);
-		expandButton.gameObject.SetActive(false);
-	}
+    }
 }
