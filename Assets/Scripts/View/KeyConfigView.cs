@@ -49,7 +49,7 @@ public class KeyConfigView : MonoBehaviour
 	[SerializeField] Button ok;
 	[SerializeField] Button cancel;
 
-	private Dictionary<InteractableSprite, KeySlotView> tempSlotSpritePairs = new Dictionary<InteractableSprite, KeySlotView>();
+	private Dictionary<IMouseInteractable, KeySlotView> tempSlotSpritePairs = new Dictionary<IMouseInteractable, KeySlotView>();
 	private KeyConfigController keyConfigController;
 
     #region Methods
@@ -81,7 +81,7 @@ public class KeyConfigView : MonoBehaviour
 
 	private void ResetChangedKeyBinding()
 	{
-		foreach (InteractableSprite functionKey in tempSlotSpritePairs.Keys)
+		foreach (IMouseInteractable functionKey in tempSlotSpritePairs.Keys)
 		{
 			if (functionKey.CurrentSlot)
 			{
@@ -122,7 +122,7 @@ public class KeyConfigView : MonoBehaviour
         keyConfigController.DisableAllKeys();
     }
 
-	public void UpdateKey(KeySlotView selectedSlot, InteractableSprite functionKey)
+	public void UpdateKey(KeySlotView selectedSlot, IMouseInteractable functionKey)
 	{
 		SaveUnchangedKeyStatus(functionKey);
 
@@ -137,7 +137,7 @@ public class KeyConfigView : MonoBehaviour
 		keyConfigController.MapFunctionToKeyboardSlot(selectedSlot.GetKeyCode(), functionKey.GetFunctionType());
 	}
 
-	private void SaveUnchangedKeyStatus(InteractableSprite functionKey)
+	private void SaveUnchangedKeyStatus(IMouseInteractable functionKey)
 	{
 		if (!tempSlotSpritePairs.ContainsKey(functionKey))
 		{
@@ -176,14 +176,14 @@ public class KeyConfigView : MonoBehaviour
 		}
 	}
 
-	private void ShowFunctionKeyOfSlot(KeySlotView slot, InteractableSprite functionKey)
+	private void ShowFunctionKeyOfSlot(KeySlotView slot, IMouseInteractable functionKey)
 	{
 		slot.UpdateFunctionKey(functionKey);
 		functionKey.gameObject.SetActive(false);
 		ShowFunctionKeyOfOtherModifierSlot(slot.GetKeyCode(), functionKey);
 	}
 
-	private void ShowFunctionKeyOfOtherModifierSlot(KeyCode keyCode, InteractableSprite functionKey)
+	private void ShowFunctionKeyOfOtherModifierSlot(KeyCode keyCode, IMouseInteractable functionKey)
 	{
 		switch (keyCode)
 		{
@@ -208,7 +208,7 @@ public class KeyConfigView : MonoBehaviour
 		}
 	}
 
-	public void ResetFunctionKey(InteractableSprite functionKey)
+	public void ResetFunctionKey(IMouseInteractable functionKey)
 	{
 		if (functionKey.CurrentSlot)
 		{

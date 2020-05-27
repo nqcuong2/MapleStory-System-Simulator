@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KeyConfigFunctionKeyView : InteractableSprite
+public class KeyConfigFunctionKeyView : IMouseInteractable
 {
 	public override void Reset()
 	{

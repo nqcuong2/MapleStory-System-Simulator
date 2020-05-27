@@ -10,7 +10,7 @@ public class KeySlotView : MonoBehaviour
 		return keyCode;
 	}
 
-	public InteractableSprite AssignedFunctionKey
+	public IMouseInteractable AssignedFunctionKey
 	{
 		get;
 		set;
@@ -28,7 +28,7 @@ public class KeySlotView : MonoBehaviour
 		AssignedFunctionKey = null;
 	}
 
-	public void UpdateFunctionKey(InteractableSprite functionKey)
+	public void UpdateFunctionKey(IMouseInteractable functionKey)
 	{
 		GetComponent<Image>().color = Constants.OPAQUE_COLOR;
 		GetComponent<Image>().sprite = functionKey.GetSprite();

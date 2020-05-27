@@ -15,7 +15,7 @@ public class InputManager : MonoBehaviour
 	}
 
 	private GraphicRaycaster raycaster;
-	private InteractableSprite selectedSprite;
+	private IMouseInteractable selectedSprite;
 
 	private void Awake()
 	{
@@ -87,7 +87,7 @@ public class InputManager : MonoBehaviour
 				}
 				else
 				{
-					selectedSprite = results[0].gameObject.GetComponent<InteractableSprite>();
+					selectedSprite = results[0].gameObject.GetComponent<IMouseInteractable>();
 				}
 
 				if (selectedSprite)
