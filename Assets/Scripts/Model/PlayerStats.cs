@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using static MSSim.Constants.StatsConstants;
 
 public class PlayerStats
 {
@@ -239,26 +236,26 @@ public class PlayerStats
 		Jump = 100;
 	}
 
-	public void AssignOneAbilityPoints(StatsConstants.AbilityPointType abilityPointType)
+	public void AssignOneAbilityPoints(AbilityPointType abilityPointType)
 	{
 		switch(abilityPointType)
 		{
-			case StatsConstants.AbilityPointType.HP:
+			case AbilityPointType.HP:
 				HP += 100;
 				break;
-			case StatsConstants.AbilityPointType.MP:
+			case AbilityPointType.MP:
 				MP += 10;
 				break;
-			case StatsConstants.AbilityPointType.STR:
+			case AbilityPointType.STR:
 				STR++;
 				break;
-			case StatsConstants.AbilityPointType.DEX:
+			case AbilityPointType.DEX:
 				DEX++;
 				break;
-			case StatsConstants.AbilityPointType.INT:
+			case AbilityPointType.INT:
 				INT++;
 				break;
-			case StatsConstants.AbilityPointType.LUK:
+			case AbilityPointType.LUK:
 				LUK++;
 				break;
 		}
@@ -284,7 +281,7 @@ public class PlayerStats
 		CurrentExp = CurrentExp - NextLvExp;
 		Level++;
 		SetNextLvExp();
-		AbilityPoints += StatsConstants.ABILITY_POINTS_PER_LV;
+		AbilityPoints += ABILITY_POINTS_PER_LV;
 	}
 	#endregion
 }

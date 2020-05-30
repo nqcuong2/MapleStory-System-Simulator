@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using static MSSim.Constants.StatsConstants;
 
 public class PlayerController : MonoBehaviour
 {
@@ -71,7 +69,7 @@ public class PlayerController : MonoBehaviour
 
 	}
 
-	public void AssignOneAbilityPoints(StatsConstants.AbilityPointType abilityPointType)
+	public void AssignOneAbilityPoints(AbilityPointType abilityPointType)
 	{
 		playerStats.AssignOneAbilityPoints(abilityPointType);
 		UpdateUIStats();
