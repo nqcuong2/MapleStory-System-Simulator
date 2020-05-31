@@ -5,18 +5,7 @@ using UnityEngine.UI;
 
 public class IMouseInteractable : MonoBehaviour
 {
-	[SerializeField] KeyConfigView.FunctionType functionType;
-
-	public KeySlotView CurrentSlot
-	{
-		get;
-		set;
-	}
-
-	private void Awake()
-	{
-		CurrentSlot = null;
-	}
+	[SerializeField] SlotItem.Type type;
 
 	public Sprite GetSprite()
 	{
@@ -29,8 +18,8 @@ public class IMouseInteractable : MonoBehaviour
 		return; 
 	}
 
-	public KeyConfigView.FunctionType GetFunctionType()
+	public new SlotItem.Type GetType()
 	{
-		return functionType;
+		return type;
 	}
 }

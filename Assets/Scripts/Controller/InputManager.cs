@@ -15,7 +15,7 @@ public class InputManager : MonoBehaviour
 	}
 
 	private GraphicRaycaster raycaster;
-	private IMouseInteractable selectedSprite;
+	private SlotItem selectedSlotItem;
 
 	private void Awake()
 	{
@@ -27,7 +27,7 @@ public class InputManager : MonoBehaviour
 	public void ShowTransparentWithGivenIcon()
 	{
 		UpdateTransparentIconPosByMousePos();
-		transparentIcon.sprite = selectedSprite.GetSprite();
+		transparentIcon.sprite = selectedSlotItem.SlotSprite;
 		transparentIcon.gameObject.SetActive(true);
 	}
 
@@ -78,19 +78,20 @@ public class InputManager : MonoBehaviour
 
 		if (results.Count > 0)
 		{
-			if (selectedSprite == null)
+			if (selectedSlotItem == null)
 			{
-				KeySlotView clickedKeySlot = results[0].gameObject.GetComponent<KeySlotView>();
-				if (clickedKeySlot)
+				SlotView selectedSlot = results[0].gameObject.GetComponent<SlotView>();
+				if (selectedSlot)
 				{
-					selectedSprite = clickedKeySlot.AssignedFunctionKey;
+                    selectedSlotItem = KeyConfigView.Instance.GetSelectedSlotItem(selectedSlot);
 				}
 				else
 				{
-					selectedSprite = results[0].gameObject.GetComponent<IMouseInteractable>();
+                    var selectedItem = results[0].gameObject.GetComponent<IMouseInteractable>();
+                    selectedSlotItem = selectedItem == null ? null : new SlotItem(selectedItem.GetSprite(), selectedItem.GetType());
 				}
 
-				if (selectedSprite)
+				if (selectedSlotItem != null)
 				{
 					ShowTransparentWithGivenIcon();
 				}
@@ -99,30 +100,17 @@ public class InputManager : MonoBehaviour
 			{
 				if (results[0].gameObject.name == "Reset_Function_Area")
 				{
-					KeyConfigView.Instance.ResetFunctionKey(selectedSprite);
+					KeyConfigView.Instance.ResetFunctionKey(selectedSlotItem);
 				}
 				else
 				{
-					KeySlotView clickedKeySlot = results[0].gameObject.GetComponent<KeySlotView>();
-					if (clickedKeySlot)
+					SlotView selectedSlot = results[0].gameObject.GetComponent<SlotView>();
+					if (selectedSlot)
 					{
-						bool requireUpdate = true;
-						if (clickedKeySlot.AssignedFunctionKey != null)
-						{
-							if (clickedKeySlot.AssignedFunctionKey.GetFunctionType() == selectedSprite.GetFunctionType())
-							{
-								requireUpdate = false;
-							}
-							else
-							{
-								clickedKeySlot.AssignedFunctionKey.Reset();
-							}
-						}
-
-						if (requireUpdate)
-						{
-							KeyConfigView.Instance.UpdateKey(clickedKeySlot, selectedSprite);
-						}
+                        if (KeyConfigView.Instance.IsSlotInKeyConfig(selectedSlot))
+                        {
+                            KeyConfigView.Instance.MapSlot(selectedSlot, selectedSlotItem);
+                        }
 					}
 				}
 
@@ -137,7 +125,7 @@ public class InputManager : MonoBehaviour
 
 	private void HideClickedIcon()
 	{
-		selectedSprite = null;
+		selectedSlotItem = null;
 		transparentIcon.sprite = null;
 		transparentIcon.gameObject.SetActive(false);
 	}

@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
+using static MSSim.Constants.StatsConstants;
 
 public class MainStatsView : MonoBehaviour
 {
@@ -58,12 +56,12 @@ public class MainStatsView : MonoBehaviour
 	private void SetupButtons()
 	{
 		autoAssign.onClick.AddListener(() => OnAutoAssignClicked());
-		hpUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.HP));
-		mpUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.MP));
-		strUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.STR));
-		dexUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.DEX));
-		intUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.INT));
-		lukUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType.LUK));
+		hpUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(AbilityPointType.HP));
+		mpUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(AbilityPointType.MP));
+		strUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(AbilityPointType.STR));
+		dexUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(AbilityPointType.DEX));
+		intUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(AbilityPointType.INT));
+		lukUp.onClick.AddListener(() => OnIncreaseOneAbilityPointClicked(AbilityPointType.LUK));
 		hyperStats.onClick.AddListener(() => OnHyperStatsClicked());
 		detailedStats.onClick.AddListener(() => OnDetailedStatsClicked());
 	}
@@ -73,7 +71,7 @@ public class MainStatsView : MonoBehaviour
 		playerController.AssignAllAbilityPoints();
 	}
 
-	private void OnIncreaseOneAbilityPointClicked(StatsConstants.AbilityPointType abilityPointType)
+	private void OnIncreaseOneAbilityPointClicked(AbilityPointType abilityPointType)
 	{
 		playerController.AssignOneAbilityPoints(abilityPointType);
 	}

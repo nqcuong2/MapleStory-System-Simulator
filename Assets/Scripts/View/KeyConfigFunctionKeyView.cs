@@ -7,6 +7,5 @@ public class KeyConfigFunctionKeyView : IMouseInteractable
 	public override void Reset()
 	{
 		gameObject.SetActive(true);
-		CurrentSlot = null;
 	}
 }

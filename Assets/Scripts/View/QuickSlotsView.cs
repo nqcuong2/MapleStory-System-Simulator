@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 public class QuickSlotsView : MonoBehaviour
 {
-	[SerializeField] Button toggleButton;
+	[SerializeField] private Button toggleButton;
+    [SerializeField] private SlotView[] slots;
 
-	public QuickSlotsView Instance
+    public static QuickSlotsView Instance
 	{
 		get;
 		private set;
@@ -17,7 +18,6 @@ public class QuickSlotsView : MonoBehaviour
 	private Vector2 expandedPos;
 	private const float ANIMATION_TIME = 1.5f;
     private const float ANIMATION_SPEED = 2.5f;
-	private bool isAnimationRunning;
 
 	private QuickSlotsView() {}
 
@@ -49,5 +49,21 @@ public class QuickSlotsView : MonoBehaviour
             rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, dest, time);
             yield return null;
         }
+    }
+
+    public bool IsSlotInQuickSlots(SlotView slot)
+    {
+        foreach (SlotView currSlot in slots)
+        {
+            if (slot == currSlot)
+                return true;
+        }
+
+        return false;
+    }
+
+    public void UpdateSlot(SlotView selectedSlot, IMouseInteractable functionKey)
+    {
+
     }
 }
