@@ -46,22 +46,14 @@ public class KeyConfigView : MonoBehaviour
 	}
 
 	private void OnCancelClicked()
-	{
-		keyConfigController.ClearChanges();
-        UpdateAllSlots();
-        UpdateAllFunctionItems();
-        gameObject.SetActive(false);
-	}
-
-	private void OnOkClicked()
-	{
-		keyConfigController.SaveNewChanges();
-		gameObject.SetActive(false);
-	}
-
-    private void OnClearAllClicked()
     {
-        keyConfigController.DisableAllKeys();
+        keyConfigController.ClearChanges();
+        UpdateKeyConfig();
+        gameObject.SetActive(false);
+    }
+
+    private void UpdateKeyConfig()
+    {
         UpdateAllSlots();
         UpdateAllFunctionItems();
     }
@@ -73,6 +65,18 @@ public class KeyConfigView : MonoBehaviour
             Sprite sprite = keyConfigController.GetSlotItem(slot.GetKeyCode())?.SlotSprite;
             slot.UpdateSprite(sprite);
         }
+    }
+
+    private void OnOkClicked()
+	{
+		keyConfigController.SaveNewChanges();
+		gameObject.SetActive(false);
+	}
+
+    private void OnClearAllClicked()
+    {
+        keyConfigController.DisableAllKeys();
+        UpdateKeyConfig();
     }
 
     private void UpdateAllFunctionItems()
@@ -97,20 +101,39 @@ public class KeyConfigView : MonoBehaviour
         {
             keyConfigController.MapFunctionToKeyboardSlot(selectedSlot.GetKeyCode(), selectedItem);
             UpdateAllSlots();
-            UpdateAllFunctionItems();
+
+            foreach (KeyConfigFunctionKeyView keyConfigFunctionKeyView in keyConfigFunctionKeyViews)
+            {
+                if (keyConfigFunctionKeyView.GetType() == selectedItem.SlotType)
+                {
+                    keyConfigFunctionKeyView.gameObject.SetActive(false);
+                }
+            }
+
+            if (oldSlotItem != null)
+            {
+                ResetFunctionKey(oldSlotItem.SlotType);
+            }
         }
     }
 
-	public void ResetFunctionKey(SlotItem selectedItem)
+    private void ResetFunctionKey(SlotItem.Type type)
+    {
+        foreach (KeyConfigFunctionKeyView keyConfigFunctionKeyView in keyConfigFunctionKeyViews)
+        {
+            if (keyConfigFunctionKeyView.GetType() == type)
+            {
+                keyConfigFunctionKeyView.Reset();
+            }
+        }
+    }
+
+	public void ResetSlot(SlotItem selectedItem)
 	{
-		//if (selectedItem.CurrentSlot)
-		//{
-  //          //SaveUnchangedKeyStatus(selectedItem);
-  //          keyConfigController.MapFunctionToKeyboardSlot(functionKey.CurrentSlot.GetKeyCode(), FunctionType.NONE);
-  //          HideFunctionKeyOfSlot(selectedItem.CurrentSlot);
-  //          selectedItem.Reset();
-		//}
-	}
+        keyConfigController.ResetSlotItem(selectedItem);
+        UpdateAllSlots();
+        ResetFunctionKey(selectedItem.SlotType);
+    }
 
 	public void ExecuteActionFromPressedKey(KeyCode keyCode)
 	{

@@ -25926,32 +25926,8 @@ MonoBehaviour:
   - {fileID: 1285736233}
   - {fileID: 1273839698}
   keyConfigFunctionKeyViews:
-  - {fileID: 2145363980}
   - {fileID: 580947617}
-  - {fileID: 588704631}
-  - {fileID: 470113284}
-  - {fileID: 1869497991}
-  - {fileID: 1710644356}
-  - {fileID: 1701420622}
-  - {fileID: 2013491808}
-  - {fileID: 1613628858}
-  - {fileID: 110689944}
-  - {fileID: 560226764}
-  - {fileID: 423679688}
   - {fileID: 134132555}
-  - {fileID: 776722756}
-  - {fileID: 1410392535}
-  - {fileID: 1287090967}
-  - {fileID: 626248627}
-  - {fileID: 1279971244}
-  - {fileID: 935402983}
-  - {fileID: 2029273293}
-  - {fileID: 402001472}
-  - {fileID: 1701101018}
-  - {fileID: 1000604329}
-  - {fileID: 1303128856}
-  - {fileID: 1763954843}
-  - {fileID: 1357713605}
   leftShiftSlot: {fileID: 1455739521}
   rightShiftSlot: {fileID: 1706175979}
   leftControlSlot: {fileID: 399864362}

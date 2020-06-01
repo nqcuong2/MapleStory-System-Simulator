@@ -100,7 +100,7 @@ public class InputManager : MonoBehaviour
 			{
 				if (results[0].gameObject.name == "Reset_Function_Area")
 				{
-					KeyConfigView.Instance.ResetFunctionKey(selectedSlotItem);
+					KeyConfigView.Instance.ResetSlot(selectedSlotItem);
 				}
 				else
 				{

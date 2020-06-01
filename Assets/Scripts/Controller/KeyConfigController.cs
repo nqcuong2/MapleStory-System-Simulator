@@ -5,10 +5,11 @@ using UnityEngine;
 public class KeyConfigController
 {
 	#region Class Fields
-	private Dictionary<int, SlotItem> inputKeyToFunctionTypeMap;
+	private Dictionary<int, SlotItem> keyBindingMap;
 	private Dictionary<int, SlotItem> tempMap = new Dictionary<int, SlotItem>();
 	private Dictionary<SlotItem.Type, Action> functionTypeToFunctionMap;
 
+    private const int INVALID_KEYCODE = -1;
     private const int KEYCODE_SHIFT = 1000;
     private const int KEYCODE_ALT = 1001;
     private const int KEYCODE_CONTROL = 1002;
@@ -44,79 +45,84 @@ public class KeyConfigController
 
 	private void InitializeKeyToFunctionMap()
 	{
-		inputKeyToFunctionTypeMap = new Dictionary<int, SlotItem>();
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Escape, new SlotItem(null, SlotItem.Type.MAIN_MENU));
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F1, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F2, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F3, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F4, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F5, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F6, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F7, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F8, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F9, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F10, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F11, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F12, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.BackQuote, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha1, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha2, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha3, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha4, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha5, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha6, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha7, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha8, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha9, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Alpha0, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Minus, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Equals, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Q, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.W, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.E, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.R, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.T, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Y, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.U, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.I, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.O, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.P, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.LeftBracket, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.RightBracket, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Backslash, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.A, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.S, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.D, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.F, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.G, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.H, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.J, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.K, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.L, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Semicolon, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Quote, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Z, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.X, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.C, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.V, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.B, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.N, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.M, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Comma, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Period, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Space, null);
-		inputKeyToFunctionTypeMap.Add(KEYCODE_SHIFT, null);
-		inputKeyToFunctionTypeMap.Add(KEYCODE_CONTROL, null);
-		inputKeyToFunctionTypeMap.Add(KEYCODE_ALT, null);
-        inputKeyToFunctionTypeMap.Add((int)KeyCode.Insert, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Home, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.PageUp, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.Delete, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.End, null);
-		inputKeyToFunctionTypeMap.Add((int)KeyCode.PageDown, null);
+		keyBindingMap = new Dictionary<int, SlotItem>();
+        keyBindingMap.Add((int)KeyCode.Escape, new SlotItem(null, SlotItem.Type.MAIN_MENU));
+		keyBindingMap.Add((int)KeyCode.F1, null);
+		keyBindingMap.Add((int)KeyCode.F2, null);
+		keyBindingMap.Add((int)KeyCode.F3, null);
+		keyBindingMap.Add((int)KeyCode.F4, null);
+		keyBindingMap.Add((int)KeyCode.F5, null);
+		keyBindingMap.Add((int)KeyCode.F6, null);
+		keyBindingMap.Add((int)KeyCode.F7, null);
+		keyBindingMap.Add((int)KeyCode.F8, null);
+		keyBindingMap.Add((int)KeyCode.F9, null);
+		keyBindingMap.Add((int)KeyCode.F10, null);
+		keyBindingMap.Add((int)KeyCode.F11, null);
+		keyBindingMap.Add((int)KeyCode.F12, null);
+		keyBindingMap.Add((int)KeyCode.BackQuote, null);
+		keyBindingMap.Add((int)KeyCode.Alpha1, null);
+		keyBindingMap.Add((int)KeyCode.Alpha2, null);
+		keyBindingMap.Add((int)KeyCode.Alpha3, null);
+		keyBindingMap.Add((int)KeyCode.Alpha4, null);
+		keyBindingMap.Add((int)KeyCode.Alpha5, null);
+		keyBindingMap.Add((int)KeyCode.Alpha6, null);
+		keyBindingMap.Add((int)KeyCode.Alpha7, null);
+		keyBindingMap.Add((int)KeyCode.Alpha8, null);
+		keyBindingMap.Add((int)KeyCode.Alpha9, null);
+		keyBindingMap.Add((int)KeyCode.Alpha0, null);
+		keyBindingMap.Add((int)KeyCode.Minus, null);
+		keyBindingMap.Add((int)KeyCode.Equals, null);
+		keyBindingMap.Add((int)KeyCode.Q, null);
+		keyBindingMap.Add((int)KeyCode.W, null);
+		keyBindingMap.Add((int)KeyCode.E, null);
+		keyBindingMap.Add((int)KeyCode.R, null);
+		keyBindingMap.Add((int)KeyCode.T, null);
+		keyBindingMap.Add((int)KeyCode.Y, null);
+		keyBindingMap.Add((int)KeyCode.U, null);
+		keyBindingMap.Add((int)KeyCode.I, null);
+		keyBindingMap.Add((int)KeyCode.O, null);
+		keyBindingMap.Add((int)KeyCode.P, null);
+		keyBindingMap.Add((int)KeyCode.LeftBracket, null);
+		keyBindingMap.Add((int)KeyCode.RightBracket, null);
+		keyBindingMap.Add((int)KeyCode.Backslash, null);
+		keyBindingMap.Add((int)KeyCode.A, null);
+		keyBindingMap.Add((int)KeyCode.S, null);
+		keyBindingMap.Add((int)KeyCode.D, null);
+		keyBindingMap.Add((int)KeyCode.F, null);
+		keyBindingMap.Add((int)KeyCode.G, null);
+		keyBindingMap.Add((int)KeyCode.H, null);
+		keyBindingMap.Add((int)KeyCode.J, null);
+		keyBindingMap.Add((int)KeyCode.K, null);
+		keyBindingMap.Add((int)KeyCode.L, null);
+		keyBindingMap.Add((int)KeyCode.Semicolon, null);
+		keyBindingMap.Add((int)KeyCode.Quote, null);
+		keyBindingMap.Add((int)KeyCode.Z, null);
+		keyBindingMap.Add((int)KeyCode.X, null);
+		keyBindingMap.Add((int)KeyCode.C, null);
+		keyBindingMap.Add((int)KeyCode.V, null);
+		keyBindingMap.Add((int)KeyCode.B, null);
+		keyBindingMap.Add((int)KeyCode.N, null);
+		keyBindingMap.Add((int)KeyCode.M, null);
+		keyBindingMap.Add((int)KeyCode.Comma, null);
+		keyBindingMap.Add((int)KeyCode.Period, null);
+		keyBindingMap.Add((int)KeyCode.Space, null);
+		keyBindingMap.Add(KEYCODE_SHIFT, null);
+		keyBindingMap.Add(KEYCODE_CONTROL, null);
+		keyBindingMap.Add(KEYCODE_ALT, null);
+        keyBindingMap.Add((int)KeyCode.Insert, null);
+		keyBindingMap.Add((int)KeyCode.Home, null);
+		keyBindingMap.Add((int)KeyCode.PageUp, null);
+		keyBindingMap.Add((int)KeyCode.Delete, null);
+		keyBindingMap.Add((int)KeyCode.End, null);
+		keyBindingMap.Add((int)KeyCode.PageDown, null);
 	}
 
-	public void MapFunctionToKeyboardSlot(KeyCode keycode, SlotItem selectedItem)
+    public void ResetSlotItem(SlotItem selectedItem)
+    {
+		RemoveFunctionFromKey(selectedItem);
+    }
+
+    public void MapFunctionToKeyboardSlot(KeyCode keycode, SlotItem selectedItem)
 	{
         int convertedKeycode = ConvertKeyCodeToInt(keycode);
 		RemoveFunctionFromKey(selectedItem);
@@ -155,10 +161,10 @@ public class KeyConfigController
             }
         }
 
-        int toRemoveKeycode = -1;
-        foreach (int keycode in inputKeyToFunctionTypeMap.Keys)
+        int toRemoveKeycode = INVALID_KEYCODE;
+        foreach (int keycode in keyBindingMap.Keys)
         {
-            SlotItem slotItem = inputKeyToFunctionTypeMap[keycode];
+            SlotItem slotItem = keyBindingMap[keycode];
             if (slotItem != null && (slotItem.SlotType == selectedItem.SlotType))
             {
                 toRemoveKeycode = keycode;
@@ -166,7 +172,10 @@ public class KeyConfigController
             }
         }
 
-        DisableKey(toRemoveKeycode);
+        if (toRemoveKeycode != INVALID_KEYCODE)
+        {
+            DisableKey(toRemoveKeycode);
+        }
     }
 
     private void DisableKey(int keycode)
@@ -203,11 +212,11 @@ public class KeyConfigController
                 functionTypeToFunctionMap[tempMap[convertedKeycode].SlotType].Invoke();
             }
         }
-		else if (inputKeyToFunctionTypeMap.ContainsKey(convertedKeycode))
+		else if (keyBindingMap.ContainsKey(convertedKeycode))
 		{
-            if (inputKeyToFunctionTypeMap[convertedKeycode] != null)
+            if (keyBindingMap[convertedKeycode] != null)
             {
-                functionTypeToFunctionMap[inputKeyToFunctionTypeMap[convertedKeycode].SlotType].Invoke();
+                functionTypeToFunctionMap[keyBindingMap[convertedKeycode].SlotType].Invoke();
             }
         }
 	}
@@ -216,7 +225,7 @@ public class KeyConfigController
 	{
 		foreach (int keycode in tempMap.Keys)
 		{
-			inputKeyToFunctionTypeMap[keycode] = tempMap[keycode];
+			keyBindingMap[keycode] = tempMap[keycode];
 		}
 
 		ClearChanges();
@@ -229,7 +238,7 @@ public class KeyConfigController
 
     public void DisableAllKeys()
     {
-        foreach (int keycode in inputKeyToFunctionTypeMap.Keys)
+        foreach (int keycode in keyBindingMap.Keys)
         {
             DisableKey(keycode);
         }
@@ -243,15 +252,15 @@ public class KeyConfigController
             return tempMap[convertedKeycode];
         }
 
-        return inputKeyToFunctionTypeMap[convertedKeycode];
+        return keyBindingMap[convertedKeycode];
     }
 
     public bool IsTypeAssigned(SlotItem.Type type)
     {
-        var toCheckMap = tempMap.Count > 0 ? tempMap : inputKeyToFunctionTypeMap;
-        foreach (SlotItem slotItem in tempMap.Values)
+        var map = tempMap.Count > 0 ? tempMap : keyBindingMap;
+        foreach (int keycode in map.Keys)
         {
-            if (slotItem != null && slotItem.SlotType == type)
+            if (map[keycode] != null && map[keycode].SlotType == type)
             {
                 return true;
             }
