@@ -98,7 +98,9 @@ public class InputManager : MonoBehaviour
 			}
 			else
 			{
-				if (results[0].gameObject.name == "Reset_Function_Area")
+                SlotItem tempItem = null;
+
+                if (results[0].gameObject.name == "Reset_Function_Area")
 				{
 					KeyConfigView.Instance.ResetSlot(selectedSlotItem);
 				}
@@ -111,11 +113,24 @@ public class InputManager : MonoBehaviour
                         {
                             KeyConfigView.Instance.MapSlot(selectedSlot, selectedSlotItem);
                         }
-					}
+                        else
+                        {
+                            tempItem = KeyConfigView.Instance.GetSelectedSlotItem(selectedSlot);
+                            KeyConfigView.Instance.MapSlotAndSave(selectedSlot, selectedSlotItem);
+                        }
+                    }
 				}
 
-				HideClickedIcon();
-			}
+                if (tempItem == null)
+                {
+                    HideClickedIcon();
+                }
+                else
+                {
+                    selectedSlotItem = tempItem;
+                    ShowTransparentWithGivenIcon();
+                }
+            }
 		}
         else
         {

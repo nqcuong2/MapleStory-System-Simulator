@@ -62,8 +62,8 @@ public class QuickSlotsView : MonoBehaviour
         return false;
     }
 
-    public void UpdateSlot(SlotView selectedSlot, IMouseInteractable functionKey)
+    public SlotView[] GetSlots()
     {
-
+        return slots;
     }
 }

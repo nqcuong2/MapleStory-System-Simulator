@@ -58,9 +58,15 @@ public class KeyConfigView : MonoBehaviour
         UpdateAllFunctionItems();
     }
 
-    private void UpdateAllSlots()
+    public void UpdateAllSlots()
     {
         foreach (SlotView slot in slots)
+        {
+            Sprite sprite = keyConfigController.GetSlotItem(slot.GetKeyCode())?.SlotSprite;
+            slot.UpdateSprite(sprite);
+        }
+
+        foreach (SlotView slot in QuickSlotsView.Instance.GetSlots())
         {
             Sprite sprite = keyConfigController.GetSlotItem(slot.GetKeyCode())?.SlotSprite;
             slot.UpdateSprite(sprite);
@@ -92,6 +98,12 @@ public class KeyConfigView : MonoBehaviour
                 keyConfigFunctionKeyView.Reset();
             }
         }
+    }
+
+    public void MapSlotAndSave(SlotView selectedSlot, SlotItem selectedItem)
+    {
+        MapSlot(selectedSlot, selectedItem);
+        keyConfigController.SaveNewChanges();
     }
 
 	public void MapSlot(SlotView selectedSlot, SlotItem selectedItem)
